@@ -1,3 +1,5 @@
+//This is the example of working code to send out
+
 export const  getCurrentTime = () => {
     const now = new Date(); // Get the current date and time.
     

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+//to see log, press cmmnd shit j or control shift j
 // Define the types for your restaurant data
 interface Restaurant {
   name: string;
@@ -16,16 +17,21 @@ const MapComponent: React.FC = () => {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          const radius = 1500; // Set your desired radius in meters
+          const radius = 150000; // Set your desired radius in meters
           const type = 'restaurant'; // Specify that you're looking for restaurants
-
-          // Create the Google Maps URL
-          const apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
+  
+          const apiKey = 'AIzaSyDvsTyOT5uX43q0nWmtD9c09GFv7aKNU4k'; // Place your API key securely
           const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=${type}&key=${apiKey}`;
-
+  
+          console.log('Fetch URL:', url); // Log the URL before fetching
+  
           try {
             const response = await fetch(url);
+            console.log('Response:', response); // Log the response
+  
             if (!response.ok) {
+              const errorData = await response.json(); // Get any error details
+              console.error('Error data:', errorData); // Log error data
               throw new Error('Network response was not ok');
             }
             const data = await response.json();
@@ -41,14 +47,31 @@ const MapComponent: React.FC = () => {
           }
         },
         (error) => {
-          setError('Geolocation failed');
-          console.error(error);
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              setError('User denied the request for Geolocation.');
+              break;
+            case error.POSITION_UNAVAILABLE:
+              setError('Location information is unavailable.');
+              break;
+            case error.TIMEOUT:
+              setError('The request to get user location timed out.');
+              break;
+            //case error.UNKNOWN_ERROR:
+            default:
+              setError('An unknown error occurred while accessing location.');
+              break;
+          }
+          console.error('Geolocation error:', error);
         }
       );
     };
-
+  
     fetchRestaurants();
   }, []);
+  
+  
+  
 
   return (
     <div>

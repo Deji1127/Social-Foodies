@@ -2,8 +2,16 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { colors } from "../utils/colors";
 import {fonts} from "../utils/fonts";
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
+
+  const navigation=useNavigation();
+
+  const handleLogin=()=>{
+    navigation.navigate("Login");
+  }
+ 
   return (
     <View style={styles.container}>
       <Image 
@@ -12,7 +20,8 @@ const HomeScreen = () => {
       />
       <Text style={styles.text}>Swipe. Meet. Eat.</Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.loginButtonWrapper, {backgroundColor:colors.deepRed}]}>
+        <TouchableOpacity style={[styles.loginButtonWrapper, {backgroundColor:colors.deepRed}]}
+        onPress={handleLogin}>
             <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.loginButtonWrapper}>
@@ -28,14 +37,14 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.softPink, // Keeps the background color the same
-    justifyContent: 'center', // Centers content vertically
-    alignItems: 'center', // Centers content horizontally
+    backgroundColor: colors.softPink, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
   logo: {
-    width: 400, // Adjust as needed
-    height: 300, // Adjust as needed
-    marginBottom: 20, // Adds space between the logo and text
+    width: 400, 
+    height: 300, 
+    marginBottom: 20, 
   },
   text: {
     color: colors.darkAccent,

@@ -18,6 +18,9 @@ const Login = () => {
   const handleGoBack=()=>{
     navigation.goBack();
   };
+   const handleSignUp=()=>{
+    navigation.navigate("Sign");
+  };
 
   return (
     <View style={styles.container}>
@@ -76,7 +79,7 @@ const Login = () => {
           <Text style={styles.accountText}>
             Don't have an account?
           </Text>
-          <TouchableOpacity>
+        <TouchableOpacity onPress={handleSignUp}>
             <Text style={styles.signupText}>
               Sign up
             </Text>
@@ -107,7 +110,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   headingText: {
-    fontSize: 32,
+    fontSize: 40,
     color: colors.darkAccent,
     fontFamily: fonts.Bold,
   },

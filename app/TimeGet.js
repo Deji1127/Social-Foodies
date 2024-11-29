@@ -13,3 +13,5 @@ export const  getCurrentTime = () => {
     
     return currentTime;
 }
+
+export default getCurrentTime

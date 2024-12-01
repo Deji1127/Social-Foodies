@@ -1,9 +1,11 @@
 let map: google.maps.Map;
 
+var center: google.maps.LatLng;
+
 async function initMap() {
     const { Map, InfoWindow } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
 
-    let center = new google.maps.LatLng(52.369358, 4.889258);
+    center = new google.maps.LatLng(40.712776, -74.005974);    
 
     map = new Map(document.getElementById('map') as HTMLElement, {
         center: center,
@@ -18,8 +20,7 @@ async function nearbySearch() {
     const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary('places') as google.maps.PlacesLibrary;
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 
-    // Restrict within the map viewport.
-    let center = new google.maps.LatLng(52.369358, 4.889258);
+    // Restrict within the map viewport. //another center option used to be here, got rid of it to prevent decoupling
 
     const request = {
         // required parameters

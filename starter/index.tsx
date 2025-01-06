@@ -2,17 +2,42 @@ let map: google.maps.Map;
 
 var center: google.maps.LatLng;
 
+function getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                resolve({ latitude, longitude });
+            },
+            (error) => {
+                reject(error);
+            }
+        );
+    });
+}
+
+
+
 async function initMap() {
     const { Map, InfoWindow } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
 
-    center = new google.maps.LatLng(40.712776, -74.005974);    
 
-    map = new Map(document.getElementById('map') as HTMLElement, {
-        center: center,
-        zoom: 11,
-        mapId: 'DEMO_MAP_ID',
-    });
-    nearbySearch();
+    try {
+        const { latitude, longitude } = await getCurrentLocation();
+        const center = new google.maps.LatLng(latitude, longitude);
+        // Now you can use 'center' for your Google Maps operations
+        map = new Map(document.getElementById('map') as HTMLElement, {
+            center: center,
+            zoom: 11,
+            mapId: 'DEMO_MAP_ID',
+        });
+        nearbySearch();
+    } catch (error) {
+        console.error("Error getting location: ", error);
+    }
+
+   
 }
 
 async function nearbySearch() {

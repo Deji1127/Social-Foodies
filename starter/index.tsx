@@ -2,7 +2,7 @@ let map: google.maps.Map;
 
 var center: google.maps.LatLng;
 
-function getCurrentLocation() {
+async function getCurrentLocation() {
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
             (position) => {

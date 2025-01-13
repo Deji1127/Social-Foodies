@@ -29,7 +29,7 @@ async function initMap() {
         // Now you can use 'center' for your Google Maps operations
         map = new Map(document.getElementById('map') as HTMLElement, {
             center: center,
-            zoom: 11,
+            zoom: 16, //11-19 are the safe ranges for the zoom, anything else is too far or too close
             mapId: 'DEMO_MAP_ID',
         });
         nearbySearch();
@@ -52,7 +52,7 @@ async function nearbySearch() {
         fields: ['displayName', 'location', 'businessStatus'],
         locationRestriction: {
             center: center,
-            radius: 500, 
+            radius: 1000, 
         },
         // optional parameters
         includedPrimaryTypes: ['restaurant'],

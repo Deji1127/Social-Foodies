@@ -17,27 +17,21 @@ async function getCurrentLocation() {
     });
 }
 
-
-
 async function initMap() {
     const { Map, InfoWindow } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
 
-
     try {
         const { latitude, longitude } = await getCurrentLocation();
-        const center = new google.maps.LatLng(latitude, longitude);
-        // Now you can use 'center' for your Google Maps operations
+        center = new google.maps.LatLng(latitude, longitude); // Corrected to use the global center variable
         map = new Map(document.getElementById('map') as HTMLElement, {
             center: center,
-            zoom: 16, //11-19 are the safe ranges for the zoom, anything else is too far or too close
+            zoom: 16,
             mapId: 'DEMO_MAP_ID',
         });
         nearbySearch();
     } catch (error) {
         console.error("Error getting location: ", error);
     }
-
-   
 }
 
 async function nearbySearch() {
@@ -45,16 +39,12 @@ async function nearbySearch() {
     const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary('places') as google.maps.PlacesLibrary;
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 
-    // Restrict within the map viewport. //another center option used to be here, got rid of it to prevent decoupling
-
     const request = {
-        // required parameters
         fields: ['displayName', 'location', 'businessStatus'],
         locationRestriction: {
             center: center,
-            radius: 1000, 
+            radius: 1000,
         },
-        // optional parameters
         includedPrimaryTypes: ['restaurant'],
         maxResultCount: 5,
         rankPreference: SearchNearbyRankPreference.POPULARITY,
@@ -66,10 +56,14 @@ async function nearbySearch() {
     const { places } = await Place.searchNearby(request);
 
     if (places.length) {
-        console.log(places);
-
         const { LatLngBounds } = await google.maps.importLibrary("core") as google.maps.CoreLibrary;
         const bounds = new LatLngBounds();
+
+        // Clear previous results
+        const resultsContainer = document.getElementById('results'); // Make sure you have an element with this ID in your HTML
+        if (resultsContainer) {
+            resultsContainer.innerHTML = ''; // Clear previous results
+        }
 
         // Loop through and get all the results.
         places.forEach((place) => {
@@ -80,13 +74,29 @@ async function nearbySearch() {
             });
 
             bounds.extend(place.location as google.maps.LatLng);
-            console.log(place);
+
+            // Create a new div for each place and add it to the results container
+            if (resultsContainer) {
+                const placeInfo = document.createElement('div');
+                placeInfo.innerHTML = `
+                    <strong>${place.displayName}</strong><br/>
+                    Location: ${place.location.lat()}, ${place.location.lng()}<br/>
+                    Status: ${place.businessStatus || 'Unknown'}
+                    Rating: ${place.rating !== undefined ? place.rating : 'Not rated'}<br/>
+                    Type: ${place.restaurantType || 'N/A'}
+                    Reviews: ${place.reviews || 'No reviews available'}<br/>
+                    Food Type: ${place.foodType || 'Not specified'}
+                `;
+                resultsContainer.appendChild(placeInfo);
+            }
         });
 
         map.fitBounds(bounds);
-
     } else {
-        console.log("No results");
+        const resultsContainer = document.getElementById('results');
+        if (resultsContainer) {
+            resultsContainer.innerHTML = 'No results found.';
+        }
     }
 }
 

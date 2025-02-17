@@ -40,7 +40,9 @@ async function nearbySearch() {
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 
     const request = {
-        fields: ['displayName', 'location', 'businessStatus'],
+        fields: ['displayName', 'location', 'businessStatus', 'allowsDogs', 'rating', 'reviews', 'userRatingCount', 'priceLevel'
+            ,'primaryType'
+        ],
         locationRestriction: {
             center: center,
             radius: 1000,
@@ -82,10 +84,13 @@ async function nearbySearch() {
                     <strong>${place.displayName}</strong><br/>
                     Location: ${place.location.lat()}, ${place.location.lng()}<br/>
                     Status: ${place.businessStatus || 'Unknown'}
-                    Rating: ${place.rating !== undefined ? place.rating : 'Not rated'}<br/>
-                    Type: ${place.restaurantType || 'N/A'}
+                    Rating: ${place.rating !== undefined ? place.Rating : 'Not rated'}<br/>
+                    Type: ${place.primaryType || 'N/A'}
                     Reviews: ${place.reviews || 'No reviews available'}<br/>
                     Food Type: ${place.foodType || 'Not specified'}
+                    Dogs: ${place.allowsDogs}
+                    UserRatingCount: ${place.userRatingCount}
+                    Price Level: ${place.priceLevel}
                 `;
                 resultsContainer.appendChild(placeInfo);
             }

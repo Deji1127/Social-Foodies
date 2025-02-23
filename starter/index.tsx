@@ -39,6 +39,7 @@ async function nearbySearch() {
     const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary('places') as google.maps.PlacesLibrary;
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 
+    // If you want a new field, NEED to update both here and in wherever you call the place.field
     const request = {
         fields: ['displayName', 'location', 'businessStatus', 'allowsDogs', 'rating', 'reviews', 'userRatingCount', 'priceLevel'
             ,'primaryType'
@@ -48,7 +49,7 @@ async function nearbySearch() {
             radius: 1000,
         },
         includedPrimaryTypes: ['restaurant'],
-        maxResultCount: 5,
+        maxResultCount: 5, //This locks down how many places can be requested. Too little?
         rankPreference: SearchNearbyRankPreference.POPULARITY,
         language: 'en-US',
         region: 'us',
@@ -84,10 +85,9 @@ async function nearbySearch() {
                     <strong>${place.displayName}</strong><br/>
                     Location: ${place.location.lat()}, ${place.location.lng()}<br/>
                     Status: ${place.businessStatus || 'Unknown'}
-                    Rating: ${place.rating !== undefined ? place.Rating : 'Not rated'}<br/>
+                    Rating: ${place.rating !== undefined ? place.rating : 'Not rated'}<br/>
                     Type: ${place.primaryType || 'N/A'}
                     Reviews: ${place.reviews || 'No reviews available'}<br/>
-                    Food Type: ${place.foodType || 'Not specified'}
                     Dogs: ${place.allowsDogs}
                     UserRatingCount: ${place.userRatingCount}
                     Price Level: ${place.priceLevel}

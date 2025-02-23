@@ -42,7 +42,7 @@ async function nearbySearch() {
     // If you want a new field, NEED to update both here and in wherever you call the place.field
     const request = {
         fields: ['displayName', 'location', 'businessStatus', 'allowsDogs', 'rating', 'reviews', 'userRatingCount', 'priceLevel'
-            ,'primaryType'
+            ,'primaryType', 'accessibilityOptions'
         ],
         locationRestriction: {
             center: center,
@@ -91,9 +91,24 @@ async function nearbySearch() {
                     Dogs: ${place.allowsDogs}
                     UserRatingCount: ${place.userRatingCount}
                     Price Level: ${place.priceLevel}
+                    Accessability options parking: ${place.accessibilityOptions['wheelchairAccessibleParking']}
+                    Accessability options Entrance: ${place.accessibilityOptions.wheelchairAccessibleEntrance}
+                    Accessability options Restroom: ${place.accessibilityOptions.wheelchairAccessibleRestroom}
+                    Accessability options Seating: ${place.accessibilityOptions.wheelchairAccessibleSeating}
+                    
                 `;
                 resultsContainer.appendChild(placeInfo);
             }
+            // "wheelchairAccessibleParking": boolean,
+            // "wheelchairAccessibleEntrance": boolean,
+            // "wheelchairAccessibleRestroom": boolean,
+            // "wheelchairAccessibleSeating": boolean
+            // PRICE_LEVEL_UNSPECIFIED 	Place price level is unspecified or unknown.
+            // PRICE_LEVEL_FREE 	Place provides free services.
+            // PRICE_LEVEL_INEXPENSIVE 	Place provides inexpensive services.
+            // PRICE_LEVEL_MODERATE 	Place provides moderately priced services.
+            // PRICE_LEVEL_EXPENSIVE 	Place provides expensive services.
+            // PRICE_LEVEL_VERY_EXPENSIVE 	Place provides very expensive services.
         });
 
         map.fitBounds(bounds);

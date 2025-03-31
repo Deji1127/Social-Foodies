@@ -23,7 +23,7 @@ const Sign = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("User is already signed in:", user);
-        navigation.replace("Main_page");
+        navigation.replace("MainPage");
       }
     });
 

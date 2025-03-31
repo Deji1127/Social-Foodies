@@ -40,7 +40,7 @@ const Login = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log("User logged in:", userCredential.user);
       Alert.alert("Success", "Login successful!");
-      navigation.replace("Main_page"); // Redirect to main page after login
+      navigation.replace("MainPage");
 
     } catch (error) {
       console.error("Login Error:", error);

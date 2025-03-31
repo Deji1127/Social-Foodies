@@ -42,44 +42,57 @@ const NewMessageScreen = ({ navigation }) => {
         <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="arrow-back" size={24} color="black" />
+                <TouchableOpacity 
+                    onPress={() => navigation.goBack()}
+                    activeOpacity={0.7}
+                    style={({ pressed }) => [
+                        styles.backButton,
+                        pressed && styles.pressEffect // Add press effect here
+                    ]}
+                >
+                    <Ionicons name="arrow-back" size={24} color="#A40000" />
                 </TouchableOpacity>
+                
                 <Text style={styles.headerTitle}>New Message</Text>
+                
                 {selectedUsers.length > 0 && (
-                    <TouchableOpacity onPress={startNewChat}>
+                    <TouchableOpacity 
+                        onPress={startNewChat}
+                        activeOpacity={0.7}
+                        style={({ pressed }) => [
+                            styles.nextButtonContainer,
+                            pressed && styles.pressEffect // Add press effect here
+                        ]}
+                    >
                         <Text style={styles.nextButton}>Next</Text>
                     </TouchableOpacity>
                 )}
             </View>
 
-            {/* Search bar */}
-            <View style={styles.searchContainer}>
-                <Ionicons name="search" size={20} color="#888" style={styles.searchIcon} />
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search for foodies..."
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                    autoFocus
-                />
-            </View>
+            {/* ... [keep search bar code as is] ... */}
 
-            {/* Selected users preview (only shown when users are selected) */}
+            {/* Selected users preview */}
             {selectedUsers.length > 0 && (
                 <View style={styles.selectedContainer}>
-                    <Text style={styles.selectedTitle}>Selected:</Text>
+                    {/* ... [keep other code] ... */}
                     <FlatList
                         horizontal
                         data={selectedUsers}
                         keyExtractor={(item) => item.id}
                         renderItem={({ item }) => (
                             <View style={styles.selectedUser}>
-                                <Image source={item.image} style={styles.selectedUserImage} />
+                                <Image 
+                                    source={item.image || require('../assets/red-placeholder.png')} 
+                                    style={styles.selectedUserImage} 
+                                />
                                 <Text style={styles.selectedUserName}>{item.name}</Text>
                                 <TouchableOpacity 
-                                    style={styles.removeButton}
-                                    onPress={() => toggleUserSelection(item)}
+                                    onPress={() => navigation.goBack()}
+                                    activeOpacity={0.7}
+                                    style={({ pressed }) => [
+                                        styles.backButton,
+                                        pressed && styles.pressEffect
+                                    ]}
                                 >
                                     <Ionicons name="close" size={16} color="white" />
                                 </TouchableOpacity>
@@ -96,10 +109,17 @@ const NewMessageScreen = ({ navigation }) => {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <TouchableOpacity 
-                        style={styles.userItem}
+                        style={({ pressed }) => [
+                            styles.userItem,
+                            pressed && styles.pressEffect // Add press effect here
+                        ]}
                         onPress={() => toggleUserSelection(item)}
+                        activeOpacity={0.7}
                     >
-                        <Image source={item.image} style={styles.userImage} />
+                        <Image 
+                            source={item.image || require('../assets/red-placeholder.png')} 
+                            style={styles.userImage} 
+                        />
                         <Text style={styles.userName}>{item.name}</Text>
                         {selectedUsers.some(u => u.id === item.id) && (
                             <Ionicons name="checkmark-circle" size={24} color="#4CAF50" />
@@ -114,7 +134,7 @@ const NewMessageScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#FFF5E7', // Cream background
     },
     header: {
         flexDirection: 'row',
@@ -122,21 +142,25 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: 15,
         borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
+        backgroundColor: '#FFF5E7', // Cream header
+        borderBottomColor: '#A40000', // Red border
     },
     headerTitle: {
         fontSize: 18,
         fontWeight: 'bold',
+        color: '#A40000', // Red title
     },
     nextButton: {
         color: '#FF6B6B',
         fontSize: 16,
         fontWeight: 'bold',
+        color: '#A40000', // Red button
     },
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#FFF5E7', // Cream
+        borderColor: '#A40000', // Red border
         borderRadius: 10,
         margin: 15,
         paddingHorizontal: 15,
@@ -152,7 +176,7 @@ const styles = StyleSheet.create({
     selectedContainer: {
         padding: 15,
         borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
+        borderBottomColor: '#A40000', // Red border
     },
     selectedTitle: {
         fontSize: 16,
@@ -180,7 +204,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: -5,
         right: -5,
-        backgroundColor: '#FF6B6B',
+        backgroundColor: '#A40000', // Red button
         borderRadius: 10,
         width: 20,
         height: 20,
@@ -203,6 +227,27 @@ const styles = StyleSheet.create({
     userName: {
         flex: 1,
         fontSize: 16,
+    },
+    pressEffect: {
+        backgroundColor: 'rgba(164, 0, 0, 0.1)',
+        borderRadius: 4, // Adjust as needed
+    },
+    nextButtonContainer: {
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+        backgroundColor: '#FFF5E7', // Cream background
+        borderWidth: 1,
+        borderColor: '#A40000', // Red border
+    },
+    nextButton: {
+        color: '#A40000',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    backButton: {
+        // Style for the back button container
+        padding: 8, // Add padding for better touch area
     },
 });
 

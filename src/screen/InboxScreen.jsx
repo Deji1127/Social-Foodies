@@ -82,7 +82,7 @@ const InboxScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#FFF5E7', // Cream background
         padding: 15,
     },
     header: {
@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 20,
+        backgroundColor: '#FFF5E7', // Cream header
     },
     logo: {
         width: 150,
@@ -100,6 +101,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 10,
+        color: '#A40000', // Red titles
     },
     matchesList: {
         paddingBottom: 10,
@@ -123,6 +125,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         borderBottomWidth: 1,
         borderBottomColor: '#f0f0f0',
+        backgroundColor: '#FFF5E7', // Cream items
     },
     conversationImage: {
         width: 50,
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
         color: '#888',
     },
     unreadMessage: {
-        color: '#000',
+        color: '#A40000', // Red for unread
         fontWeight: '600',
     },
     conversationTime: {
@@ -157,7 +160,7 @@ const styles = StyleSheet.create({
         width: 10,
         height: 10,
         borderRadius: 5,
-        backgroundColor: '#FF6B6B',
+        backgroundColor: '#A40000', // Red badge
     },
 });
 

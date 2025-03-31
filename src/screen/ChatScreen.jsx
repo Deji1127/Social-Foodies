@@ -149,7 +149,7 @@ const ChatScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#FFF5E7', // Updated to cream
     },
     headerTitleContainer: {
         flexDirection: 'row',
@@ -164,14 +164,16 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 18,
         fontWeight: 'bold',
+        color: '#A40000', // Added red color
     },
     groupText: {
         fontSize: 12,
-        color: '#888',
+        color: '#A40000', // Updated to red
         marginLeft: 5,
     },
     backButton: {
         marginLeft: 15,
+        color: '#A40000', // Added red color
     },
     messagesList: {
         padding: 15,
@@ -192,6 +194,8 @@ const styles = StyleSheet.create({
         height: 32,
         borderRadius: 16,
         marginRight: 8,
+        borderColor: '#A40000', // Added red border
+        borderWidth: 1,
     },
     messageBubble: {
         maxWidth: '70%',
@@ -199,25 +203,27 @@ const styles = StyleSheet.create({
         borderRadius: 18,
     },
     currentUserBubble: {
-        backgroundColor: '#FF6B6B',
+        backgroundColor: '#A40000', // Updated to red
         borderBottomRightRadius: 4,
     },
     otherUserBubble: {
-        backgroundColor: '#e5e5ea',
+        backgroundColor: '#FFFFFF', // Changed to pure white for better contrast
         borderBottomLeftRadius: 4,
+        borderColor: '#A40000', // Added red border
+        borderWidth: 1,
     },
     messageText: {
         fontSize: 16,
     },
     currentUserText: {
-        color: 'white',
+        color: '#FFF5E7', // Updated to cream
     },
     otherUserText: {
-        color: 'black',
+        color: '#000000', // Pure black for better readability
     },
     messageTime: {
         fontSize: 10,
-        color: 'rgba(255,255,255,0.7)',
+        color: 'rgba(164, 0, 0, 0.7)', // Updated to semi-transparent red
         marginTop: 4,
         alignSelf: 'flex-end',
     },
@@ -226,18 +232,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 10,
         borderTopWidth: 1,
-        borderTopColor: '#eee',
-        backgroundColor: 'white',
+        borderTopColor: '#A40000', // Updated to red
+        backgroundColor: '#FFF5E7', // Updated to cream
     },
     input: {
         flex: 1,
         borderWidth: 1,
-        borderColor: '#ddd',
+        borderColor: '#A40000', // Updated to red
         borderRadius: 20,
         paddingHorizontal: 15,
         paddingVertical: 10,
         maxHeight: 100,
         marginRight: 10,
+        backgroundColor: '#FFFFFF', // White background for input
     },
     sendButton: {
         padding: 8,

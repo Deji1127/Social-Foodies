@@ -151,7 +151,6 @@ const styles = StyleSheet.create({
         color: '#A40000', // Red title
     },
     nextButton: {
-        color: '#FF6B6B',
         fontSize: 16,
         fontWeight: 'bold',
         color: '#A40000', // Red button

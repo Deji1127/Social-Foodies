@@ -24,8 +24,16 @@ const InboxScreen = ({ navigation }) => {
                     source={require('../assets/social-foodies-logo.png')} 
                     style={styles.logo} 
                 />
-                <TouchableOpacity onPress={() => navigation.navigate('NewMessage')}>
-                    <Ionicons name="create-outline" size={28} color="black" />
+                <TouchableOpacity 
+                    onPress={() => navigation.navigate('NewMessage')}
+                    activeOpacity={0.7}
+                    style={({ pressed }) => [
+                        styles.newMessageButton,
+                        pressed && styles.pressEffect
+                    ]}
+                    >
+                    
+                    <Ionicons name="create-outline" size={28} color="#A40000" />
                 </TouchableOpacity>
             </View>
 

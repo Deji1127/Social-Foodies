@@ -108,7 +108,7 @@ const ChatScreen = ({ route, navigation }) => {
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.container}
-            keyboardVerticalOffset={90}
+            keyboardVerticalOffset={Platform.select({ ios: 90, android: 70 })}
         >
             {/* Messages list */}
             <FlatList
@@ -138,7 +138,7 @@ const ChatScreen = ({ route, navigation }) => {
                     <Ionicons 
                         name="send" 
                         size={24} 
-                        color={newMessage.trim() === '' ? '#ccc' : '#FF6B6B'} 
+                        color={newMessage.trim() === '' ? '#ccc' : '#A40000'} 
                     />
                 </TouchableOpacity>
             </View>

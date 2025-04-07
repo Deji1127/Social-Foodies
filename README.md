@@ -48,3 +48,29 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Contributing
+
+To contribute changes to this project, please follow the version control guidelines
+
+1. Main Branch
+   - The `main` branch should always contain the most up-to-date and stable version of the project.
+
+2. Creating a New Feature or Fix
+   - Create a new branch from `main`
+
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b your-branch-name
+   ```
+
+   - Make your changes and commit them
+   - Push your branch to the remote repository:
+   
+   ```bash
+   git push origin your-branch-name
+   ```
+
+3. Creating a Pull Request (PR)
+   - Open a PR from your feature/fix branch into main on the website and merge

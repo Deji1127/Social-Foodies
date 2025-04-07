@@ -1,3 +1,4 @@
+
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { colors } from "../utils/colors";
@@ -5,14 +6,11 @@ import { fonts } from "../utils/fonts";
 import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
+
   const navigation = useNavigation();
 
   const handleLogin = () => {
     navigation.navigate("Login");
-  };
-
-  const handleProfile = () => {
-    navigation.navigate("Profile"); // Update the route if your profile screen uses a different name.
   };
 
   const handleSignup = () => {
@@ -21,32 +19,20 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Image 
-        source={require("../assets/social1.png")} 
-        style={styles.logo} 
+      <Image
+        source={require("../assets/social1.png")}
+        style={styles.logo}
       />
       <Text style={styles.text}>Swipe. Meet. Eat.</Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={[styles.loginButtonWrapper, {backgroundColor: colors.deepRed}]}
-          onPress={handleLogin}
-        >
+        <TouchableOpacity style={[styles.loginButtonWrapper, { backgroundColor: colors.deepRed }]}
+          onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.loginButtonWrapper} 
-          onPress={handleSignup}
-        >
+        <TouchableOpacity style={styles.loginButtonWrapper} onPress={handleSignup}>
           <Text style={styles.SignUpButtonText}>Sign-Up</Text>
         </TouchableOpacity>
       </View>
-      {/* Added Profile Button */}
-      <TouchableOpacity 
-        style={styles.profileButtonWrapper} 
-        onPress={handleProfile}
-      >
-        <Text style={styles.profileButtonText}>Profile</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -56,21 +42,21 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.softPink, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
+    backgroundColor: colors.softPink,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logo: {
-    width: 400, 
-    height: 300, 
-    marginBottom: 20, 
+    width: 400,
+    height: 300,
+    marginBottom: 20,
   },
   text: {
     color: colors.darkAccent,
     fontSize: 30,
     fontFamily: fonts.Bold,
     textAlign: "center",
-    marginTop: 40, 
+    marginTop: 40,
     marginVertical: 20,
   },
   buttonContainer: {
@@ -91,23 +77,13 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: colors.softPink,
     fontSize: 20,
-    fontFamily: fonts.Extra,
+    fontFamily: fonts.Extra
+
   },
   SignUpButtonText: {
     color: colors.darkAccent,
     fontSize: 20,
-    fontFamily: fonts.Extra,
-  },
-  profileButtonWrapper: {
-    marginTop: 20,
-    backgroundColor: colors.deepRed,
-    paddingHorizontal: 40,
-    paddingVertical: 10,
-    borderRadius: 20,
-  },
-  profileButtonText: {
-    color: colors.softPink,
-    fontSize: 20,
-    fontFamily: fonts.Extra,
+    fontFamily: fonts.Extra
+
   },
 });

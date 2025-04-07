@@ -5,7 +5,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './src/screen/HomeScreen';
 import Login from './src/screen/Login';
 import Sign from './src/screen/Sign';
-import Profile from './src/screen/Profile';
+import Profile from './src/screen/Bio';
+import Rewards from './src/screen/Rewards';
+import Friends from './src/screen/Friends';
+
+// Inside your navigator (likely a Stack or Tab.Navigator):
+
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +22,10 @@ const App = () => {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Sign" component={Sign} />
-          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="Bio" component={Profile} />
+          <Stack.Screen name="Rewards" component={Rewards}></Stack.Screen>
+          <Stack.Screen name="Friends" component={Friends}>
+          </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     

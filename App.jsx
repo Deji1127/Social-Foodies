@@ -9,6 +9,9 @@ import MainPage from "./src/screen/MainPage";
 import Rewards from "./src/screen/Rewards";
 import BottomTab from "./src/screen/BottomTab";
 import Friends from "./src/screen/Friends";
+import Inbox from "./src/screen/Inbox.jsx";
+import ChatScreen from "./src/screen/ChatScreen.jsx";
+import NewMessageScreen from "./src/screen/NewMessageScreen.jsx";
 
 
 const Stack = createNativeStackNavigator();
@@ -28,6 +31,9 @@ const App = () => {
                 <Stack.Screen name="Rewards" component={Rewards} />
                 <Stack.Screen name="BottomTab" component={BottomTab} />
                 <Stack.Screen name="Friends" component={Friends} />
+                <Stack.Screen name="Inbox" component={Inbox} />
+                <Stack.Screen name="Chat" component={ChatScreen} />
+                <Stack.Screen name="NewMessage" component={NewMessageScreen} />
 
 
             </Stack.Navigator>

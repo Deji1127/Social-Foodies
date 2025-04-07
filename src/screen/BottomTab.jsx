@@ -20,7 +20,7 @@ const BottomTab = () => {
                 <Feather name="heart" size={28} color="#B40324" />
                 <Text style={styles.tabLabel}>Matches</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.tabItem}>
+            <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Inbox')}>
                 <Feather name="message-square" size={28} color="#B40324" />
                 <Text style={styles.tabLabel}>Inbox</Text>
             </TouchableOpacity>

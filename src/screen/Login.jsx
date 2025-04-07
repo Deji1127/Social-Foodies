@@ -228,4 +228,3 @@ const styles = StyleSheet.create({
     fontFamily: fonts.Extra,
   },
 });
-

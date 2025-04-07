@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Image, StyleSheet, TextInput } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import { colors } from '/workspaces/Social-Foodies/Social-Foodies/src/utils/colors.js';
-import { fonts } from '/workspaces/Social-Foodies/Social-Foodies/src/utils/fonts.js';
+import { colors } from '../utils/colors';
+import { fonts } from '../utils/fonts';
 
 const Inbox = ({ navigation }) => {
   const [conversations, setConversations] = useState([]);

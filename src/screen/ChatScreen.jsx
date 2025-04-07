@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { db } from '../firebase';
 import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
-import { colors } from '/workspaces/Social-Foodies/Social-Foodies/src/utils/colors.js';
-import { fonts } from '/workspaces/Social-Foodies/Social-Foodies/src/utils/fonts.js';
+import { colors } from '../utils/colors';
+import { fonts } from '../utils/fonts';
 
 const ChatScreen = ({ route }) => {
   const { conversationId } = route.params;

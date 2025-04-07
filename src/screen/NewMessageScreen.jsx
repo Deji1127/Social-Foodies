@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
-import { colors } from '/workspaces/Social-Foodies/Social-Foodies/src/utils/colors.js';
-import { fonts } from '/workspaces/Social-Foodies/Social-Foodies/src/utils/fonts.js';
+import { colors } from '../utils/colors';
+import { fonts } from '../utils/fonts';
 
 const NewMessageScreen = ({ route, navigation }) => {
   const { matches } = route.params;

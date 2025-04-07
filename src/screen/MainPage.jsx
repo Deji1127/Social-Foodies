@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions, TextInput, Alert, } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';//////
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 const screenWidth = Dimensions.get('window').width;
@@ -75,21 +74,10 @@ const MainPage = () => {
                 <Text style={styles.mapLabel}>Foodie Adventure</Text>
                 {location && (
                     <MapView
-                        style={styles.map}
-                        initialRegion={{
-                            latitude: location.latitude,
-                            longitude: location.longitude,
-                            latitudeDelta: 0.01,
-                            longitudeDelta: 0.01,
-                        }}
-                        showsUserLocation={true}
+                        
                     >
                         <Marker
-                            coordinate={{
-                                latitude: location.latitude,
-                                longitude: location.longitude,
-                            }}
-                            title="You Are Here"
+                          
                         />
                     </MapView>
                 )}

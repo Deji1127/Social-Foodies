@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions, TextInput, Alert, } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions, TextInput, Alert } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import { useNavigation } from '@react-navigation/native';//////
+import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
+import { initMap } from '/workspaces/Social-Foodies/MapFunctions/gMap.js'; // Ensure this function initializes the map as required
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -39,6 +40,9 @@ const MainPage = () => {
 
             let currentLocation = await Location.getCurrentPositionAsync({});
             setLocation(currentLocation.coords);
+            if (currentLocation.coords) {
+                initMap(currentLocation.coords); // Initialize the map with the current location coordinates
+            }
         })();
     }, []);
 
@@ -52,10 +56,7 @@ const MainPage = () => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topBar}>
-
-
                 <Image source={require('../assets/social1.png')} style={styles.logo} />
-
                 <View style={styles.searchWrapper}>
                     <Feather name="search" size={18} color="#999" style={styles.searchIcon} />
                     <TextInput
@@ -64,7 +65,6 @@ const MainPage = () => {
                         placeholderTextColor="#999"
                     />
                 </View>
-
                 <TouchableOpacity>
                     <Feather name="menu" size={30} color="#B40324" />
                 </TouchableOpacity>
@@ -72,15 +72,7 @@ const MainPage = () => {
 
             <View style={styles.mapContainer}>
                 <Text style={styles.mapLabel}>Foodie Adventure</Text>
-                {location && (
-                    <MapView
-                        
-                    >
-                        <Marker
-                          
-                        />
-                    </MapView>
-                )}
+                {/* The map is initialized in the useEffect hook */}
             </View>
 
             <View style={styles.recommendationSection}>
@@ -154,13 +146,6 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 3,
         letterSpacing: 1,
-    },
-    map: {
-        width: 350,
-        height: 250,
-        borderRadius: 20,
-        borderWidth: 2,
-        borderColor: '#B40324',
     },
     recommendationSection: {
         marginTop: 25,

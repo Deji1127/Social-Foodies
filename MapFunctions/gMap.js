@@ -21,7 +21,7 @@ export async function initMap() {
 
     try {
         const { latitude, longitude } = await getCurrentLocation();
-        center = new google.maps.LatLng(latitude, longitude); // Corrected to use the global center variable
+        center = new google.maps.LatLng(latitude, longitude);
         map = new Map(document.getElementById('map'), {
             center: center,
             zoom: 16,
@@ -113,5 +113,5 @@ export async function nearbySearch() {
     }
 }
 
-// Call initMap to initialize the map
-initMap();
+// // Call initMap to initialize the map
+// initMap();

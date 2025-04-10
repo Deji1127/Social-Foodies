@@ -4,7 +4,7 @@ import { StyleSheet, View, Platform } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 const WebViewScreen = () => {
-    const uri = 'file:///workspaces/Social-Foodies/MapFunctions/index.html';
+    const uri = '/workspaces/Social-Foodies/MapFunctions/index.html';
     
     return (
         <View style={styles.container}>

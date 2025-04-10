@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions, TextInput, Alert, Linking } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import { initMap } from '/workspaces/Social-Foodies/MapFunctions/gMap.js'; // Ensure this function initializes the map as required
+import { WebView } from 'react-native-webview';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -53,6 +54,11 @@ const MainPage = () => {
         </View>
     );
 
+    const handleButtonPress = () => {
+        navigation.navigate('WebViewScreen'); // Navigate to the WebView screen
+    };
+    
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topBar}>
@@ -72,6 +78,9 @@ const MainPage = () => {
 
             <View style={styles.mapContainer}>
                 <Text style={styles.mapLabel}>Foodie Adventure</Text>
+                <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
+                    <Text style={styles.buttonText}>View Map</Text>
+                </TouchableOpacity>
                 {/* The map is initialized in the useEffect hook */}
             </View>
 
@@ -146,6 +155,18 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 3,
         letterSpacing: 1,
+    },
+    button: {
+        backgroundColor: '#B40324',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginTop: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
     recommendationSection: {
         marginTop: 25,

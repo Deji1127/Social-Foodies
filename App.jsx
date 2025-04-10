@@ -12,6 +12,7 @@ import Friends from "./src/screen/Friends";
 import Inbox from "./src/screen/Inbox.jsx";
 import ChatScreen from "./src/screen/ChatScreen.jsx";
 import NewMessageScreen from "./src/screen/NewMessageScreen.jsx";
+import WebViewScreen from './src/screen/WebViewScreen.jsx'; // Import the WebView screen
 
 
 const Stack = createNativeStackNavigator();
@@ -34,7 +35,7 @@ const App = () => {
                 <Stack.Screen name="Inbox" component={Inbox} />
                 <Stack.Screen name="Chat" component={ChatScreen} />
                 <Stack.Screen name="NewMessage" component={NewMessageScreen} />
-
+                <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
 
             </Stack.Navigator>
         </NavigationContainer>

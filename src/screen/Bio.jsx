@@ -60,6 +60,35 @@ const updateProfileInFirestore = async (userId, profileData) => {
     }
 };
 
+// NEW: Save user reviews to Firestore
+const saveReviewsToFirestore = async (userId, reviews) => {
+    try {
+        const userDocRef = doc(db, "users", userId);
+        await setDoc(userDocRef, { reviews }, { merge: true });
+        console.log("Reviews saved to Firestore!");
+    } catch (error) {
+        console.error("Error saving reviews:", error);
+    }
+};
+
+// NEW: Get user reviews from Firestore
+const getReviewsFromFirestore = async (userId, setReviews) => {
+    try {
+        const userDocRef = doc(db, "users", userId);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+            const data = userDoc.data();
+            if (data.reviews) {
+                setReviews(data.reviews);
+                console.log("Reviews loaded from Firestore!");
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching reviews:", error);
+    }
+};
+
+
 
 const getProfileFromFirestore = async (userId, setProfile, setName, setEmail, setBio, setPicture) => {
     try {
@@ -93,10 +122,40 @@ const Bio = () => {
     const [picture, setPicture] = useState(profile.picture);
     const [reviews, setReviews] = useState(sampleReviews);
 
+    const removeReview = async (id) => {
+        const updatedReviews = reviews.filter(review => review.id !== id);
+        setReviews(updatedReviews);
 
-    const removeReview = (id) => {
-        setReviews((prevReviews) => prevReviews.filter(review => review.id !== id));
+        const userId = auth.currentUser?.uid;
+        if (userId) {
+            await saveReviewsToFirestore(userId, updatedReviews); // NEW: Save updated reviews
+        }
     };
+    const addReview = async () => {
+        Alert.prompt(
+            "Add Review",
+            "Enter the name of the place you want to review:",
+            async (text) => {
+                if (text) {
+                    const newReview = {
+                        id: Date.now().toString(),
+                        name: text,
+                        image: require('../assets/pic1.png'), // You can customize later
+                    };
+
+                    const updatedReviews = [...reviews, newReview];
+                    setReviews(updatedReviews);
+
+                    const userId = auth.currentUser?.uid;
+                    if (userId) {
+                        await saveReviewsToFirestore(userId, updatedReviews);
+                    }
+                }
+            }
+        );
+    };
+
+
 
 
     useEffect(() => {
@@ -110,7 +169,10 @@ const Bio = () => {
             const userId = auth.currentUser?.uid;
             if (userId) {
                 await getProfileFromFirestore(userId, setProfile, setName, setEmail, setBio, setPicture);
+                await getReviewsFromFirestore(userId, setReviews); // NEW: Load reviews from Firestore
             }
+
+
         })();
     }, []);
 
@@ -215,14 +277,17 @@ const Bio = () => {
 
 
                 <View style={styles.actionRow}>
-                    <TouchableOpacity style={styles.actionButton}>
+                    <TouchableOpacity style={styles.actionButton} onPress={addReview}>
                         <Feather name="edit-3" size={22} color="#B40324" />
                         <Text style={styles.actionText}>Add Review</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.actionButton}>
+
+
+                    <TouchableOpacity style={styles.actionButton} onPress={pickImage}>
                         <Feather name="camera" size={22} color="#B40324" />
                         <Text style={styles.actionText}>Add Photo</Text>
                     </TouchableOpacity>
+
                     <TouchableOpacity style={styles.actionButton}>
                         <Feather name="check-circle" size={22} color="#B40324" />
                         <Text style={styles.actionText}>Check In</Text>

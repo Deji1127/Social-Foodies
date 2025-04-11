@@ -7,16 +7,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { GOOGLE_API_KEY } from '../utils/constants';
 
 import {
-    ScrollView,
-    View,
-    Text,
-    Image,
-    Dimensions,
-    StyleSheet,
-    TextInput, 
-    FlatList,
-    TouchableOpacity,
-    Alert,
+    ScrollView, View,Text, Image, Dimensions, StyleSheet, TextInput,  FlatList, TouchableOpacity, Alert,
   } from 'react-native';
 
   

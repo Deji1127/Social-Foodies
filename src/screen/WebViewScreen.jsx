@@ -1,26 +1,29 @@
-// Import necessary modules
+// WebViewScreen.jsx
+
 import React from 'react';
-import { StyleSheet, View, Platform } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { useRoute } from '@react-navigation/native';
+
 
 const WebViewScreen = () => {
-    const uri = '/workspaces/Social-Foodies/MapFunctions/index.html';
-    
+    const route = useRoute();
+    const { latitude, longitude } = route.params || {};
+
+    const uri = latitude && longitude
+        ? `https://www.google.com/maps/search/restaurants/@${latitude},${longitude},15z`
+        : 'https://www.google.com/maps/search/restaurants+near+me';
+
     return (
         <View style={styles.container}>
-            {Platform.OS === 'web' ? (
-                // For web, use an iframe to load the HTML
-                <iframe 
-                    src={uri}
-                    style={{ width: '100%', height: '100%', border: 'none' }}
-                />
-            ) : (
-                // For mobile, use WebView
-                <WebView 
-                    source={{ uri }} 
-                    style={{ flex: 1 }} 
-                />
-            )}
+            <WebView
+                source={{ uri }}
+                style={{ flex: 1 }}
+                originWhitelist={['*']}
+                javaScriptEnabled
+                domStorageEnabled
+                startInLoadingState
+            />
         </View>
     );
 };
@@ -28,8 +31,6 @@ const WebViewScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
 });
 

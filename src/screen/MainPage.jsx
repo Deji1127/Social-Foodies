@@ -1,63 +1,136 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions, TextInput, Alert, Linking } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
-import { initMap } from '/workspaces/Social-Foodies/MapFunctions/gMap.js'; // Ensure this function initializes the map as required
-import { WebView } from 'react-native-webview';
+import MapView, { Marker } from 'react-native-maps';
+import { GOOGLE_API_KEY } from '../utils/constants';
+
+import {
+    ScrollView,
+    View,
+    Text,
+    Image,
+    Dimensions,
+    StyleSheet,
+    TextInput, 
+    FlatList,
+    TouchableOpacity,
+    Alert,
+  } from 'react-native';
+
+  
+  
+  
+  const NearbyRestaurants = ({ restaurants }) => {
+    console.log('Rendering NearbyRestaurants with', restaurants.length, 'items');
+
+    return (
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollContainer}>
+        {restaurants.map((place, index) => (
+          <View key={index} style={styles.card}>
+            <Image
+              source={{
+                uri: place.photo
+                  ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photo}&key=${GOOGLE_API_KEY}`
+                  : 'https://via.placeholder.com/200x180.png?text=No+Image'
+              }}
+              style={styles.cardImage}
+            />
+            <Text style={styles.cardText}>{place.name}</Text>
+          </View>
+        ))}
+      </ScrollView>
+    );
+  };
+  
 
 const screenWidth = Dimensions.get('window').width;
 
-const recommendations = [
-    {
-        id: '1',
-        title: 'Gen Korean BBQ House',
-        image: require('../assets/korean.png'),
-    },
-    {
-        id: '2',
-        title: 'Kura Revolving Sushi Bar',
-        image: require('../assets/burger.png'),
-    },
-    {
-        id: '3',
-        title: 'Goobne Chicken 굽네치킨',
-        image: require('../assets/boba.png'),
-    },
-];
-
 const MainPage = () => {
+    
     const navigation = useNavigation();
+    const [recommendations, setRecommendations] = useState([]);
     const [location, setLocation] = useState(null);
+    const [restaurants, setRestaurants] = useState([]);
 
     useEffect(() => {
         (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Permission Denied', 'Location access is required to show your position.');
-                return;
-            }
-
-            let currentLocation = await Location.getCurrentPositionAsync({});
-            setLocation(currentLocation.coords);
-            if (currentLocation.coords) {
-                initMap(currentLocation.coords); // Initialize the map with the current location coordinates
-            }
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            Alert.alert('Permission Denied', 'Location access is required to show your position.');
+            return;
+          }
+      
+          let currentLocation = await Location.getCurrentPositionAsync({});
+          setLocation(currentLocation.coords);
+      
+          const { latitude, longitude } = currentLocation.coords;
+      
+          console.log('Fetching restaurants...');
+          console.log('Lat:', latitude, 'Lng:', longitude);
+          console.log('API KEY:', GOOGLE_API_KEY);
+      
+          try {
+            const response = await fetch(
+              `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1500&type=restaurant&key=${GOOGLE_API_KEY}`
+            );
+            const data = await response.json();
+            console.log('API response:', data);
+          
+            const results = data.results.map((place, index) => {
+              const photoRef = place.photos?.[0]?.photo_reference || null;
+              const photoUrl = photoRef
+                ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoRef}&key=${GOOGLE_API_KEY}`
+                : 'https://via.placeholder.com/200x180.png?text=No+Image';
+          
+              // Log to test if image URLs are valid
+              console.log(`Restaurant: ${place.name}`);
+              console.log(`Photo URL: ${photoUrl}`);
+          
+              return {
+                id: place.place_id || index.toString(),
+                name: place.name,
+                lat: place.geometry.location.lat,
+                lng: place.geometry.location.lng,
+                photo: photoRef,          // keep photoRef in case you're using it dynamically
+                photoUrl: photoUrl        // add full URL to make it easy to use
+              };
+            });
+          
+            setRestaurants(results);
+            setRecommendations(results.slice(0, 10));
+          } catch (err) {
+            console.error('Error fetching restaurants:', err);
+          }
+          
         })();
-    }, []);
+      }, []);
+      
+      const handleViewMap = () => {
+        if (location) {
+          navigation.navigate('WebViewScreen', {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          });
+        } else {
+          Alert.alert('Location not ready yet');
+        }
+      };
+      
+      
 
     const renderCard = ({ item }) => (
         <View style={styles.card}>
-            <Image source={item.image} style={styles.cardImage} />
-            <Text style={styles.cardText}>{item.title}</Text>
+            <Image 
+                source={{ uri: item.photo 
+                    ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photo}&key=${GOOGLE_API_KEY}`
+                    : 'https://via.placeholder.com/200x180.png?text=No+Image' }} 
+                style={styles.cardImage} 
+            />
+            <Text style={styles.cardText}>{item.name}</Text>
         </View>
     );
-
-    const handleButtonPress = () => {
-        navigation.navigate('WebViewScreen'); // Navigate to the WebView screen
-    };
-    
 
     return (
         <SafeAreaView style={styles.container}>
@@ -68,6 +141,7 @@ const MainPage = () => {
                     <TextInput
                         style={styles.searchBarWithIcon}
                         placeholder="Search..."
+
                         placeholderTextColor="#999"
                     />
                 </View>
@@ -75,26 +149,47 @@ const MainPage = () => {
                     <Feather name="menu" size={30} color="#B40324" />
                 </TouchableOpacity>
             </View>
-
             <View style={styles.mapContainer}>
-                <Text style={styles.mapLabel}>Foodie Adventure</Text>
-                <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
-                    <Text style={styles.buttonText}>View Map</Text>
-                </TouchableOpacity>
-                {/* The map is initialized in the useEffect hook */}
-            </View>
+  <Text style={styles.mapLabel}>Foodie Adventure</Text>
 
-            <View style={styles.recommendationSection}>
-                <Text style={styles.recommendationTitle}>Foodie Recommendations</Text>
-                <FlatList
-                    data={recommendations}
-                    renderItem={renderCard}
-                    keyExtractor={(item) => item.id}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{ paddingRight: 20 }}
-                />
-            </View>
+  {location && (
+    <MapView
+      style={{ height: 200, width: '100%', marginBottom: 15 }}
+      initialRegion={{
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      }}
+      showsUserLocation={true}
+    >
+      {restaurants.map((r) => (
+        <Marker
+          key={r.id}
+          coordinate={{ latitude: r.lat, longitude: r.lng }}
+          title={r.name}
+          description="Spotted by Social Foodies"
+          pinColor="#B40324"
+        />
+      ))}
+    </MapView>
+  )}
+
+
+  {/* Add this below the map */}
+  <Text style={styles.recommendationTitle}>Foodie Recommendations</Text>
+
+  {recommendations.length > 0 && (
+  <NearbyRestaurants restaurants={recommendations} />
+)}
+
+
+</View>
+
+
+
+
+      
 
             <View style={styles.bottomTab}>
                 <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('MainPage')}>
@@ -155,18 +250,6 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 3,
         letterSpacing: 1,
-    },
-    button: {
-        backgroundColor: '#B40324',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        marginTop: 10,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
     },
     recommendationSection: {
         marginTop: 25,
@@ -251,4 +334,9 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#333',
     },
+    scrollContainer: {
+        paddingLeft: 20,
+        paddingRight: 10,
+      },
+      
 });

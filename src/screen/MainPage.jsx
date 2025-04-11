@@ -13,32 +13,34 @@ import {
   
   
   
-  const NearbyRestaurants = ({ restaurants }) => {
+  const NearbyRestaurants = ({ restaurants, onSelectRestaurant }) => {
     console.log('Rendering NearbyRestaurants with', restaurants.length, 'items');
-
+  
     return (
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollContainer}>
         {restaurants.map((place, index) => (
-          <View key={index} style={styles.card}>
-            <Image
-              source={{
-                uri: place.photo
-                  ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photo}&key=${GOOGLE_API_KEY}`
-                  : 'https://via.placeholder.com/200x180.png?text=No+Image'
-              }}
-              style={styles.cardImage}
-            />
-            <Text style={styles.cardText}>{place.name}</Text>
-          </View>
+          <TouchableOpacity key={index} onPress={() => onSelectRestaurant?.(place)}>
+            <View style={styles.card}>
+              <Image
+                source={{ uri: place.photoUrl }}
+                style={styles.cardImage}
+              />
+              <Text style={styles.cardText}>{place.name}</Text>
+            </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
     );
   };
   
+  
 
 const screenWidth = Dimensions.get('window').width;
 
 const MainPage = () => {
+    const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+    const mapRef = React.useRef(null);
+
     
     const navigation = useNavigation();
     const [recommendations, setRecommendations] = useState([]);
@@ -145,6 +147,8 @@ const MainPage = () => {
 
   {location && (
     <MapView
+    ref={mapRef}  // 
+    
       style={{ height: 200, width: '100%', marginBottom: 15 }}
       initialRegion={{
         latitude: location.latitude,
@@ -171,8 +175,20 @@ const MainPage = () => {
   <Text style={styles.recommendationTitle}>Foodie Recommendations</Text>
 
   {recommendations.length > 0 && (
-  <NearbyRestaurants restaurants={recommendations} />
+  <NearbyRestaurants
+    restaurants={recommendations}
+    onSelectRestaurant={(restaurant) => {
+      setSelectedRestaurant(restaurant);
+      mapRef.current?.animateToRegion({
+        latitude: restaurant.lat,
+        longitude: restaurant.lng,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      }, 1000); // smooth zoom in
+    }}
+  />
 )}
+
 
 
 </View>

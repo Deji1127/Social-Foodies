@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
@@ -14,9 +15,10 @@ import {
 
 
 
-
 const NearbyRestaurants = ({ restaurants }) => {
   console.log('Rendering NearbyRestaurants with', restaurants.length, 'items');
+
+
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollContainer}>
@@ -46,6 +48,46 @@ const MainPage = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [location, setLocation] = useState(null);
   const [restaurants, setRestaurants] = useState([]);
+
+  const [nearbyUsers, setNearbyUsers] = useState([]);
+
+
+  const updateUserLocation = async (coords) => {
+    if (!auth.currentUser) return;
+
+    const userDoc = doc(db, 'users', auth.currentUser.uid);
+    await setDoc(userDoc, {
+      location: {
+        lat: coords.latitude,
+        lng: coords.longitude,
+      },
+      lastUpdated: new Date(),
+    }, { merge: true });
+  };
+
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
+      const otherUsers = [];
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (data.location) {
+          otherUsers.push({
+            id: docSnap.id,
+            lat: data.location.lat,
+            lng: data.location.lng,
+          });
+        }
+
+        console.log("Adding user marker:", docSnap.id, data.location);
+
+      });
+      console.log("Nearby users snapshot:", snapshot.docs.length);
+      setNearbyUsers(otherUsers);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -168,6 +210,17 @@ const MainPage = () => {
                 pinColor="#B40324"
               />
             ))}
+
+            {nearbyUsers.map(user => (
+              <Marker
+                key={user.id}
+                coordinate={{ latitude: user.lat, longitude: user.lng }}
+                title="Foodie Nearby"
+                description="Another Social Foodie is around here!"
+                pinColor={user.id === auth.currentUser?.uid ? "#00FF00" : "#0000FF"}
+              />
+            ))}
+
           </MapView>
         )}
 

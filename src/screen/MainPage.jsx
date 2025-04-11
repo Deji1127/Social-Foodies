@@ -14,10 +14,9 @@ import {
 
 
 
+
 const NearbyRestaurants = ({ restaurants }) => {
   console.log('Rendering NearbyRestaurants with', restaurants.length, 'items');
-
-
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollContainer}>
@@ -47,44 +46,6 @@ const MainPage = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [location, setLocation] = useState(null);
   const [restaurants, setRestaurants] = useState([]);
-
-  const [nearbyUsers, setNearbyUsers] = useState([]);
-
-
-  const updateUserLocation = async (coords) => {
-    if (!auth.currentUser) return;
-
-    const userDoc = doc(db, 'users', auth.currentUser.uid);
-    await setDoc(userDoc, {
-      location: {
-        lat: coords.latitude,
-        lng: coords.longitude,
-      },
-      lastUpdated: new Date(),
-    }, { merge: true });
-  };
-
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
-      const otherUsers = [];
-      snapshot.forEach(docSnap => {
-        if (docSnap.id !== auth.currentUser?.uid) {
-          const data = docSnap.data();
-          if (data.location) {
-            otherUsers.push({
-              id: docSnap.id,
-              lat: data.location.lat,
-              lng: data.location.lng,
-            });
-          }
-        }
-      });
-      setNearbyUsers(otherUsers);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     (async () => {
@@ -207,17 +168,6 @@ const MainPage = () => {
                 pinColor="#B40324"
               />
             ))}
-
-            {nearbyUsers.map(user => (
-              <Marker
-                key={user.id}
-                coordinate={{ latitude: user.lat, longitude: user.lng }}
-                title="Foodie Nearby"
-                description="Another Social Foodie is around here!"
-                pinColor="#0000FF" // blue for users
-              />
-            ))}
-
           </MapView>
         )}
 

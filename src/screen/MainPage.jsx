@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
@@ -10,62 +9,39 @@ import { doc, setDoc, collection, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 
 import {
-  ScrollView, View, Text, Image, Dimensions, StyleSheet, TextInput, FlatList, TouchableOpacity, Alert,
+  ScrollView, View, Text, Image, Dimensions, StyleSheet, TextInput, TouchableOpacity, Alert,
 } from 'react-native';
 
-
-
 const NearbyRestaurants = ({ restaurants, onSelectRestaurant }) => {
-    console.log('Rendering NearbyRestaurants with', restaurants.length, 'items');
-  
-    return (
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollContainer}>
-        {restaurants.map((place, index) => (
-          <TouchableOpacity key={index} onPress={() => onSelectRestaurant?.(place)}>
-            <View style={styles.card}>
-              <Image
-                source={{ uri: place.photoUrl }}
-                style={styles.cardImage}
-              />
-              <Text style={styles.cardText}>{place.name}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    );
-  };
-
-
-const screenWidth = Dimensions.get('window').width;
+  return (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollContainer}>
+      {restaurants.map((place, index) => (
+        <TouchableOpacity key={index} onPress={() => onSelectRestaurant?.(place)}>
+          <View style={styles.card}>
+            <Image
+              source={{ uri: place.photoUrl }}
+              style={styles.cardImage}
+            />
+            <Text style={styles.cardText}>{place.name}</Text>
+            {place.rating && (
+              <Text style={styles.ratingText}>⭐ {place.rating.toFixed(1)}</Text>
+            )}
+          </View>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
+};
 
 const MainPage = () => {
-
   const navigation = useNavigation();
   const [recommendations, setRecommendations] = useState([]);
   const [location, setLocation] = useState(null);
   const [restaurants, setRestaurants] = useState([]);
-  const mapRef = useRef(null); // ✅ this was missing
-  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const mapRef = useRef(null);
   const markerRefs = useRef({});
-
-
-
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [nearbyUsers, setNearbyUsers] = useState([]);
-
-
-  const updateUserLocation = async (coords) => {
-    if (!auth.currentUser) return;
-
-    const userDoc = doc(db, 'users', auth.currentUser.uid);
-    await setDoc(userDoc, {
-      location: {
-        lat: coords.latitude,
-        lng: coords.longitude,
-      },
-      lastUpdated: new Date(),
-    }, { merge: true });
-  };
-
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
@@ -79,14 +55,9 @@ const MainPage = () => {
             lng: data.location.lng,
           });
         }
-
-        console.log("Adding user marker:", docSnap.id, data.location);
-
       });
-      console.log("Nearby users snapshot:", snapshot.docs.length);
       setNearbyUsers(otherUsers);
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -97,23 +68,15 @@ const MainPage = () => {
         Alert.alert('Permission Denied', 'Location access is required to show your position.');
         return;
       }
-
       let currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation.coords);
-      await updateUserLocation(currentLocation.coords);
 
       const { latitude, longitude } = currentLocation.coords;
-
-      console.log('Fetching restaurants...');
-      console.log('Lat:', latitude, 'Lng:', longitude);
-      console.log('API KEY:', GOOGLE_API_KEY);
-
       try {
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1500&type=restaurant&key=${GOOGLE_API_KEY}`
         );
         const data = await response.json();
-        console.log('API response:', data);
 
         const results = data.results.map((place, index) => {
           const photoRef = place.photos?.[0]?.photo_reference || null;
@@ -121,17 +84,14 @@ const MainPage = () => {
             ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoRef}&key=${GOOGLE_API_KEY}`
             : 'https://via.placeholder.com/200x180.png?text=No+Image';
 
-          // Log to test if image URLs are valid
-          console.log(`Restaurant: ${place.name}`);
-          console.log(`Photo URL: ${photoUrl}`);
-
           return {
             id: place.place_id || index.toString(),
             name: place.name,
             lat: place.geometry.location.lat,
             lng: place.geometry.location.lng,
-            photo: photoRef,          // keep photoRef in case you're using it dynamically
-            photoUrl: photoUrl        // add full URL to make it easy to use
+            photo: photoRef,
+            photoUrl: photoUrl,
+            rating: place.rating || null,
           };
         });
 
@@ -140,36 +100,8 @@ const MainPage = () => {
       } catch (err) {
         console.error('Error fetching restaurants:', err);
       }
-
     })();
   }, []);
-
-  const handleViewMap = () => {
-    if (location) {
-      navigation.navigate('WebViewScreen', {
-        latitude: location.latitude,
-        longitude: location.longitude,
-      });
-    } else {
-      Alert.alert('Location not ready yet');
-    }
-  };
-
-
-
-  const renderCard = ({ item }) => (
-    <View style={styles.card}>
-      <Image
-        source={{
-          uri: item.photo
-            ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photo}&key=${GOOGLE_API_KEY}`
-            : 'https://via.placeholder.com/200x180.png?text=No+Image'
-        }}
-        style={styles.cardImage}
-      />
-      <Text style={styles.cardText}>{item.name}</Text>
-    </View>
-  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -180,7 +112,6 @@ const MainPage = () => {
           <TextInput
             style={styles.searchBarWithIcon}
             placeholder="Search..."
-
             placeholderTextColor="#999"
           />
         </View>
@@ -188,11 +119,12 @@ const MainPage = () => {
           <Feather name="menu" size={30} color="#B40324" />
         </TouchableOpacity>
       </View>
+
       <View style={styles.mapContainer}>
         <Text style={styles.mapLabel}>Foodie Adventure</Text>
-
         {location && (
           <MapView
+            ref={mapRef}
             style={{ height: 200, width: '100%', marginBottom: 15 }}
             initialRegion={{
               latitude: location.latitude,
@@ -212,7 +144,6 @@ const MainPage = () => {
                 ref={(ref) => (markerRefs.current[r.id] = ref)}
               />
             ))}
-
             {nearbyUsers.map(user => (
               <Marker
                 key={user.id}
@@ -222,71 +153,30 @@ const MainPage = () => {
                 pinColor={user.id === auth.currentUser?.uid ? "#00FF00" : "#0000FF"}
               />
             ))}
-
           </MapView>
         )}
 
-        
-
-
-        {/* Add this below the map */}
         <Text style={styles.recommendationTitle}>Foodie Recommendations</Text>
-
         {recommendations.length > 0 && (
-  <NearbyRestaurants
-    restaurants={recommendations}
-    onSelectRestaurant={(restaurant) => {
-        setSelectedRestaurant(restaurant);
-        mapRef.current?.animateToRegion(
-          {
-            latitude: restaurant.lat,
-            longitude: restaurant.lng,
-            latitudeDelta: 0.004, // smaller = more zoom
-            longitudeDelta: 0.004,
-          },
-          300 // animation duration in ms
-        );
-      
-        // changedoptional: show marker callout after zoom
-        setTimeout(() => {
-          markerRefs.current[restaurant.id]?.showCallout();
-        }, 900);
-      }}
-      
-      
-  />
-)}
-
-
-
-      </View>
-
-
-
-
-
-
-      <View style={styles.bottomTab}>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('MainPage')}>
-          <Feather name="home" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Rewards')}>
-          <Feather name="gift" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Rewards</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem}>
-          <Feather name="heart" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Matches</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem}>
-          <Feather name="message-square" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Inbox</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Bio')}>
-          <Feather name="user" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Me</Text>
-        </TouchableOpacity>
+          <NearbyRestaurants
+            restaurants={recommendations}
+            onSelectRestaurant={(restaurant) => {
+              setSelectedRestaurant(restaurant);
+              mapRef.current?.animateToRegion(
+                {
+                  latitude: restaurant.lat,
+                  longitude: restaurant.lng,
+                  latitudeDelta: 0.003,
+                  longitudeDelta: 0.003,
+                },
+                800
+              );
+              setTimeout(() => {
+                markerRefs.current[restaurant.id]?.showCallout();
+              }, 900);
+            }}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -319,28 +209,14 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: '900',
     color: '#B40324',
-    fontFamily: 'HelveticaNeue-Bold',
     textAlign: 'center',
-    textShadowColor: '#fff',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
-    letterSpacing: 1,
-  },
-  recommendationSection: {
-    marginTop: 25,
-    paddingHorizontal: 20,
   },
   recommendationTitle: {
     fontSize: 26,
     fontWeight: '900',
     color: '#B40324',
-    fontFamily: 'HelveticaNeue-Bold',
     textAlign: 'center',
     marginBottom: 15,
-    textShadowColor: '#fff',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
-    letterSpacing: 1,
   },
   card: {
     width: 200,
@@ -351,6 +227,7 @@ const styles = StyleSheet.create({
     borderColor: '#B40324',
     borderWidth: 1.5,
     overflow: 'hidden',
+    paddingBottom: 10,
   },
   cardImage: {
     width: '100%',
@@ -361,27 +238,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     textAlign: 'center',
-    paddingTop: 10,
+    paddingTop: 5,
   },
-  bottomTab: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 15,
-    paddingBottom: 25,
-    borderTopWidth: 1,
-    borderColor: '#B40324',
-    backgroundColor: '#CFAFA6',
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
+  ratingText: {
+    fontSize: 14,
+    color: '#888',
+    textAlign: 'center',
   },
-  tabItem: {
-    alignItems: 'center',
-  },
-  tabLabel: {
-    fontSize: 12,
-    color: '#333',
-    marginTop: 4,
+  scrollContainer: {
+    paddingLeft: 20,
+    paddingRight: 10,
   },
   searchWrapper: {
     flexDirection: 'row',
@@ -409,9 +275,24 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#333',
   },
-  scrollContainer: {
-    paddingLeft: 20,
-    paddingRight: 10,
+  bottomTab: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 15,
+    paddingBottom: 25,
+    borderTopWidth: 1,
+    borderColor: '#B40324',
+    backgroundColor: '#CFAFA6',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
   },
-
+  tabItem: {
+    alignItems: 'center',
+  },
+  tabLabel: {
+    fontSize: 12,
+    color: '#333',
+    marginTop: 4,
+  },
 });

@@ -5,8 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 import { GOOGLE_API_KEY } from '../utils/constants';
-import { doc, setDoc, collection, onSnapshot } from 'firebase/firestore';
+import { doc, setDoc, collection, onSnapshot, getDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase';
+import MenuButton from './MenuButton';
 
 import {
   ScrollView, View, Text, Image, Dimensions, StyleSheet, TextInput, TouchableOpacity, Alert,
@@ -42,13 +43,34 @@ const MainPage = () => {
   const markerRefs = useRef({});
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [nearbyUsers, setNearbyUsers] = useState([]);
+  const [isVisibleOnMap, setIsVisibleOnMap] = useState(true);
+
+  useEffect(() => {
+    const fetchUserPreferences = async () => {
+      const userId = auth.currentUser?.uid;
+      if (!userId) return;
+      try {
+        const docRef = doc(db, 'users', userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.preferences?.visibleOnMap === false) {
+            setIsVisibleOnMap(false);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user preferences:", error);
+      }
+    };
+    fetchUserPreferences();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
       const otherUsers = [];
       snapshot.forEach(docSnap => {
         const data = docSnap.data();
-        if (data.location) {
+        if (data.location && data.preferences?.visibleOnMap !== false) {
           otherUsers.push({
             id: docSnap.id,
             lat: data.location.lat,
@@ -72,6 +94,17 @@ const MainPage = () => {
       setLocation(currentLocation.coords);
 
       const { latitude, longitude } = currentLocation.coords;
+
+      if (auth.currentUser && isVisibleOnMap) {
+        await setDoc(doc(db, 'users', auth.currentUser.uid), {
+          location: {
+            lat: latitude,
+            lng: longitude,
+          },
+          lastUpdated: new Date(),
+        }, { merge: true });
+      }
+
       try {
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1500&type=restaurant&key=${GOOGLE_API_KEY}`
@@ -101,7 +134,7 @@ const MainPage = () => {
         console.error('Error fetching restaurants:', err);
       }
     })();
-  }, []);
+  }, [isVisibleOnMap]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -115,9 +148,7 @@ const MainPage = () => {
             placeholderTextColor="#999"
           />
         </View>
-        <TouchableOpacity>
-          <Feather name="menu" size={30} color="#B40324" />
-        </TouchableOpacity>
+        <MenuButton onPress={() => navigation.navigate('Preferences')} />
       </View>
 
       <View style={styles.mapContainer}>
@@ -155,6 +186,28 @@ const MainPage = () => {
             ))}
           </MapView>
         )}
+        <View style={styles.toggleContainer}>
+  <Text style={styles.toggleLabel}>Show me on map:</Text>
+  <TouchableOpacity
+    style={[
+      styles.toggleButton,
+      { backgroundColor: isVisibleOnMap ? '#B40324' : '#ccc' },
+    ]}
+    onPress={async () => {
+      const newValue = !isVisibleOnMap;
+      setIsVisibleOnMap(newValue);
+      const userId = auth.currentUser?.uid;
+      if (userId) {
+        await setDoc(doc(db, 'users', userId), {
+          preferences: { visibleOnMap: newValue }
+        }, { merge: true });
+      }
+    }}
+  >
+    <Text style={styles.toggleText}>{isVisibleOnMap ? 'Yes' : 'No'}</Text>
+  </TouchableOpacity>
+</View>
+
 
         <Text style={styles.recommendationTitle}>Foodie Recommendations</Text>
         {recommendations.length > 0 && (
@@ -178,6 +231,29 @@ const MainPage = () => {
           />
         )}
       </View>
+      <View style={styles.bottomTab}>
+                <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('MainPage')}>
+                    <Feather name="home" size={28} color="#B40324" />
+                    <Text style={styles.tabLabel}>Home</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Rewards')}>
+                    <Feather name="gift" size={28} color="#B40324" />
+                    <Text style={styles.tabLabel}>Rewards</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.tabItem}>
+                    <Feather name="heart" size={28} color="#B40324" />
+                    <Text style={styles.tabLabel}>Matches</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.tabItem}>
+                    <Feather name="message-square" size={28} color="#B40324" />
+                    <Text style={styles.tabLabel}>Inbox</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Bio')}>
+                    <Feather name="user" size={28} color="#B40324" />
+                    <Text style={styles.tabLabel}>Me</Text>
+                </TouchableOpacity>
+            </View>
+
     </SafeAreaView>
   );
 };
@@ -295,4 +371,25 @@ const styles = StyleSheet.create({
     color: '#333',
     marginTop: 4,
   },
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 15,
+  },
+  toggleLabel: {
+    fontSize: 16,
+    marginRight: 10,
+    color: '#333',
+  },
+  toggleButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  toggleText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  
 });

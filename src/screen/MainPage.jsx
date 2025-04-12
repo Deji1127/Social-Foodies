@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,29 +15,25 @@ import {
 
 
 
-const NearbyRestaurants = ({ restaurants }) => {
-  console.log('Rendering NearbyRestaurants with', restaurants.length, 'items');
-
-
-
-  return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollContainer}>
-      {restaurants.map((place, index) => (
-        <View key={index} style={styles.card}>
-          <Image
-            source={{
-              uri: place.photo
-                ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photo}&key=${GOOGLE_API_KEY}`
-                : 'https://via.placeholder.com/200x180.png?text=No+Image'
-            }}
-            style={styles.cardImage}
-          />
-          <Text style={styles.cardText}>{place.name}</Text>
-        </View>
-      ))}
-    </ScrollView>
-  );
-};
+const NearbyRestaurants = ({ restaurants, onSelectRestaurant }) => {
+    console.log('Rendering NearbyRestaurants with', restaurants.length, 'items');
+  
+    return (
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollContainer}>
+        {restaurants.map((place, index) => (
+          <TouchableOpacity key={index} onPress={() => onSelectRestaurant?.(place)}>
+            <View style={styles.card}>
+              <Image
+                source={{ uri: place.photoUrl }}
+                style={styles.cardImage}
+              />
+              <Text style={styles.cardText}>{place.name}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    );
+  };
 
 
 const screenWidth = Dimensions.get('window').width;
@@ -48,6 +44,11 @@ const MainPage = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [location, setLocation] = useState(null);
   const [restaurants, setRestaurants] = useState([]);
+  const mapRef = useRef(null); // ✅ this was missing
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const markerRefs = useRef({});
+
+
 
   const [nearbyUsers, setNearbyUsers] = useState([]);
 
@@ -208,6 +209,7 @@ const MainPage = () => {
                 title={r.name}
                 description="Spotted by Social Foodies"
                 pinColor="#B40324"
+                ref={(ref) => (markerRefs.current[r.id] = ref)}
               />
             ))}
 
@@ -224,13 +226,37 @@ const MainPage = () => {
           </MapView>
         )}
 
+        
+
 
         {/* Add this below the map */}
         <Text style={styles.recommendationTitle}>Foodie Recommendations</Text>
 
         {recommendations.length > 0 && (
-          <NearbyRestaurants restaurants={recommendations} />
-        )}
+  <NearbyRestaurants
+    restaurants={recommendations}
+    onSelectRestaurant={(restaurant) => {
+        setSelectedRestaurant(restaurant);
+        mapRef.current?.animateToRegion(
+          {
+            latitude: restaurant.lat,
+            longitude: restaurant.lng,
+            latitudeDelta: 0.003, // smaller = more zoom
+            longitudeDelta: 0.003,
+          },
+          800 // animation duration in ms
+        );
+      
+        // Optional: show marker callout after zoom
+        setTimeout(() => {
+          markerRefs.current[restaurant.id]?.showCallout();
+        }, 900);
+      }}
+      
+      
+  />
+)}
+
 
 
       </View>

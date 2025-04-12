@@ -12,6 +12,7 @@ import MenuButton from './MenuButton';
 import {
   ScrollView, View, Text, Image, Dimensions, StyleSheet, TextInput, TouchableOpacity, Alert,
 } from 'react-native';
+import PreferencesScreen from './PreferencesScreen';
 
 const NearbyRestaurants = ({ restaurants, onSelectRestaurant }) => {
   return (
@@ -148,7 +149,8 @@ const MainPage = () => {
             placeholderTextColor="#999"
           />
         </View>
-        <MenuButton onPress={() => navigation.navigate('Preferences')} />
+        <MenuButton onPress={() => navigation.navigate('MenuButton')} />
+
       </View>
 
       <View style={styles.mapContainer}>

@@ -41,7 +41,7 @@ const App = () => {
                 <Stack.Screen name="NewMessage" component={NewMessageScreen} />
                 <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
                 <Stack.Screen name="MenuButton" component={MenuButton}/>
-                <Stack.Screen name="PreferencesScreen" component={MenuButton}/>
+                <Stack.Screen name="PreferencesScreen" component={PreferencesScreen}/>
 
 
 

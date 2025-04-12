@@ -241,13 +241,13 @@ const MainPage = () => {
           {
             latitude: restaurant.lat,
             longitude: restaurant.lng,
-            latitudeDelta: 0.003, // smaller = more zoom
-            longitudeDelta: 0.003,
+            latitudeDelta: 0.004, // smaller = more zoom
+            longitudeDelta: 0.004,
           },
-          800 // animation duration in ms
+          300 // animation duration in ms
         );
       
-        // Optional: show marker callout after zoom
+        // changedoptional: show marker callout after zoom
         setTimeout(() => {
           markerRefs.current[restaurant.id]?.showCallout();
         }, 900);

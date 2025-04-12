@@ -56,14 +56,51 @@ const MainPage = () => {
     if (!auth.currentUser) return;
 
     const userDoc = doc(db, 'users', auth.currentUser.uid);
+
+    // example avatar URL — replace with dynamic one later
+    const avatarUrl = 'https://your-avatar-image-url.com/avatar.png';
+
     await setDoc(userDoc, {
       location: {
         lat: coords.latitude,
         lng: coords.longitude,
       },
+      avatar: avatarUrl, // 💡 add this here
       lastUpdated: new Date(),
     }, { merge: true });
   };
+
+
+  useEffect(() => {
+    let locationSubscription = null;
+
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Location access is required.');
+        return;
+      }
+
+      locationSubscription = await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.High,
+          timeInterval: 5000, // every 5 seconds
+          distanceInterval: 5, // or every 5 meters
+        },
+        (loc) => {
+          setLocation(loc.coords);
+          updateUserLocation(loc.coords);
+        }
+      );
+    })();
+
+    // 🧼 Cleanup when component unmounts
+    return () => {
+      if (locationSubscription) {
+        locationSubscription.remove();
+      }
+    };
+  }, []);
 
 
   useEffect(() => {
@@ -76,6 +113,7 @@ const MainPage = () => {
             id: docSnap.id,
             lat: data.location.lat,
             lng: data.location.lng,
+            avatar: data.avatar || null,
           });
         }
 
@@ -83,7 +121,8 @@ const MainPage = () => {
 
       });
       console.log("Nearby users snapshot:", snapshot.docs.length);
-      setNearbyUsers(otherUsers);
+      setNearbyUsers(otherUsers.filter(user => user.id !== auth.currentUser?.uid));
+
     });
 
     return () => unsubscribe();
@@ -199,7 +238,7 @@ const MainPage = () => {
               latitudeDelta: 0.01,
               longitudeDelta: 0.01,
             }}
-            showsUserLocation={true}
+            showsUserLocation={false}
           >
             {restaurants.map((r) => (
               <Marker
@@ -215,11 +254,32 @@ const MainPage = () => {
               <Marker
                 key={user.id}
                 coordinate={{ latitude: user.lat, longitude: user.lng }}
-                title="Foodie Nearby"
+                title={user.id === auth.currentUser?.uid ? "You" : "Foodie Nearby"}
                 description="Another Social Foodie is around here!"
-                pinColor={user.id === auth.currentUser?.uid ? "#00FF00" : "#0000FF"}
-              />
+              >
+                <View style={{ alignItems: 'center' }}>
+                  <Image
+                    source={
+                      user.avatar
+                        ? { uri: user.avatar }
+                        : require('../assets/new_profile.png') // fallback default avatar
+                    }
+                    style={{
+                      width: 45,
+                      height: 45,
+                      borderRadius: 22.5,
+                      borderColor: user.id === auth.currentUser?.uid ? '#00FF00' : '#B40324',
+                      borderWidth: 2,
+                      backgroundColor: '#fff',
+                    }}
+                  />
+                  <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#B40324', marginTop: 2 }}>
+                    {user.id === auth.currentUser?.uid ? "You" : "Foodie"}
+                  </Text>
+                </View>
+              </Marker>
             ))}
+
 
           </MapView>
         )}

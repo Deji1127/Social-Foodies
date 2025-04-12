@@ -8,6 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import BottomTab from '../screen/BottomTab';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 
 
 
@@ -53,7 +55,11 @@ const ProfileProvider = ({ children }) => {
 
 const updateProfileInFirestore = async (userId, profileData) => {
     try {
-        await setDoc(doc(db, "users", userId), profileData);
+        await setDoc(doc(db, "users", userId), {
+            ...profileData,
+            avatar: profileData.picture || null,
+        }, { merge: true });
+
         console.log("Profile updated successfully!");
     } catch (error) {
         console.error("Error updating profile: ", error);
@@ -184,18 +190,35 @@ const Bio = () => {
             quality: 1,
         });
 
-        if (result.assets && result.assets.length > 0) {
+        if (!result.canceled && result.assets?.length > 0) {
             const uri = result.assets[0].uri;
             setPicture(uri);
             setProfile((prev) => ({ ...prev, picture: uri }));
+
+            const response = await fetch(uri);
+            const blob = await response.blob();
+
+            const storage = getStorage();
+            const storageRef = ref(storage, `avatars/${auth.currentUser.uid}`);
+
+            await uploadBytes(storageRef, blob);
+            const downloadURL = await getDownloadURL(storageRef);
+
+            // Save avatar URL to Firestore
+            await setDoc(doc(db, 'users', auth.currentUser.uid), {
+                avatar: downloadURL,
+            }, { merge: true });
+
+            console.log("Avatar uploaded and saved to Firestore:", downloadURL);
         }
     };
 
 
 
+
     const toggleEditMode = async () => {
         if (editMode) {
-            const profileData = { name, email, bio, picture };
+            const profileData = { name, email, bio, avatar: picture };
             const userId = auth.currentUser?.uid;
             if (userId) {
                 await updateProfileInFirestore(userId, profileData);

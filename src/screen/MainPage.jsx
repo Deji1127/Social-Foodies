@@ -36,6 +36,7 @@ const NearbyRestaurants = ({ restaurants, onSelectRestaurant }) => {
 };
 
 const MainPage = () => {
+  const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
   const [recommendations, setRecommendations] = useState([]);
   const [location, setLocation] = useState(null);
@@ -136,6 +137,41 @@ const MainPage = () => {
       }
     })();
   }, [isVisibleOnMap]);
+  const handleSearch = async () => {
+    if (!searchQuery.trim() || !location) return;
+  
+    const { latitude, longitude } = location;
+  
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1500&keyword=${encodeURIComponent(searchQuery)}&type=restaurant&key=${GOOGLE_API_KEY}`
+      );
+      const data = await response.json();
+  
+      const results = data.results.map((place, index) => {
+        const photoRef = place.photos?.[0]?.photo_reference || null;
+        const photoUrl = photoRef
+          ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoRef}&key=${GOOGLE_API_KEY}`
+          : 'https://via.placeholder.com/200x180.png?text=No+Image';
+  
+        return {
+          id: place.place_id || index.toString(),
+          name: place.name,
+          lat: place.geometry.location.lat,
+          lng: place.geometry.location.lng,
+          photo: photoRef,
+          photoUrl: photoUrl,
+          rating: place.rating || null,
+        };
+      });
+  
+      setRestaurants(results);
+      setRecommendations(results.slice(0, 10));
+    } catch (error) {
+      console.error('Search error:', error);
+    }
+  };
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -144,10 +180,14 @@ const MainPage = () => {
         <View style={styles.searchWrapper}>
           <Feather name="search" size={18} color="#999" style={styles.searchIcon} />
           <TextInput
-            style={styles.searchBarWithIcon}
-            placeholder="Search..."
-            placeholderTextColor="#999"
+           style={styles.searchBarWithIcon}
+           placeholder="Search..."
+           placeholderTextColor="#999"
+           value={searchQuery}
+          onChangeText={setSearchQuery}
+          onSubmitEditing={handleSearch}
           />
+
         </View>
         <MenuButton onPress={() => navigation.navigate('MenuButton')} />
 

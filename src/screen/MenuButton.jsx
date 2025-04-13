@@ -38,7 +38,7 @@ export default function MenuButton() {
               { label: 'Preferences', action: () => navigation.navigate('PreferencesScreen') },
               { label: 'Contact Support', action: () => navigation.navigate('SupportScreen') },
               { label: 'About', action: () => navigation.navigate('AboutScreen') },
-              { label: 'Terms & Privacy', action: () => {} },
+              { label: 'Terms & Conditions', action: () => navigation.navigate('Terms') },
               { label: 'Log Out', action: () => console.log('Log out'), danger: true },
             ].map((item, index) => (
               <Pressable

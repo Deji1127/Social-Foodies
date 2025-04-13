@@ -38,7 +38,9 @@ export default function MenuButton() {
               { label: 'Preferences', action: () => navigation.navigate('PreferencesScreen') },
               { label: 'Contact Support', action: () => navigation.navigate('SupportScreen') },
               { label: 'About', action: () => navigation.navigate('AboutScreen') },
-              { label: 'Terms & Conditions', action: () => navigation.navigate('Terms') },/// TERMS CONDITONSSSSS JUST UPDATED              { label: 'Log Out', action: () => console.log('Log out'), danger: true },
+              { label: 'Terms & Conditions', action: () => navigation.navigate('Terms') },/// TERMS CONDITONSSSSS JUST UPDATED            
+              { label: 'Log Out', action: () => navigation.navigate('Logout'), danger: true },
+              ,
             ].map((item, index) => (
               <Pressable
                 key={index}

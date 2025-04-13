@@ -16,6 +16,7 @@ import WebViewScreen from './src/screen/WebViewScreen.jsx'; // Import the WebVie
 import MenuButton from './src/screen/MenuButton.jsx'; // Import the WebView screen
 import PreferencesScreen from './src/screen/PreferencesScreen.jsx'; // Import the WebView screen
 import Terms from './src/screen/Terms.jsx';/// TERMS CONDITONSSSSS JUST UPDATED
+import Logout from './src/screen/Logout'; // LOGOUT UPDATTTTTEED
 
 
 
@@ -44,6 +45,7 @@ const App = () => {
                 <Stack.Screen name="MenuButton" component={MenuButton}/>
                 <Stack.Screen name="PreferencesScreen" component={PreferencesScreen}/>
                 <Stack.Screen name="Terms" component={Terms} /> 
+                <Stack.Screen name="Logout" component={Logout} />
 
 
 

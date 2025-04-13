@@ -226,7 +226,7 @@ const MainPage = () => {
               latitudeDelta: 0.01,
               longitudeDelta: 0.01,
             }}
-            showsUserLocation={true}
+            showsUserLocation={false}
           >
             {restaurants.map((r) => (
               <Marker

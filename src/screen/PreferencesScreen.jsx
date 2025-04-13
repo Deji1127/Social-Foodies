@@ -13,6 +13,7 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
+import BottomTab from './BottomTab';
 
 const ageGroups = ['18–24', '25–34', '35–44', '45–54', '55+'];
 const genderPrefs = ['Men', 'Women', 'Everyone'];
@@ -97,6 +98,7 @@ export default function PreferencesScreen() {
             value={isVisible}
             onValueChange={toggleSwitch}
             thumbColor={isVisible ? '#B40324' : '#ccc'}
+            style={{ marginLeft: 30 }}
           />
 
           <Text style={styles.label}>What’s your age group?</Text>
@@ -109,43 +111,8 @@ export default function PreferencesScreen() {
           {renderOption(ageDiffPrefs, ageDiff, setAgeDiff, 'ageDiff')}
         </View>
       </ScrollView>
+      <BottomTab />
 
-      {/* ✅ Bottom Tab Bar */}
-      <View style={styles.bottomTab}>
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => navigation.navigate('MainPage')}
-        >
-          <Feather name="home" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Home</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => navigation.navigate('Rewards')}
-        >
-          <Feather name="gift" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Rewards</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tabItem}>
-          <Feather name="heart" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Matches</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tabItem}>
-          <Feather name="message-square" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Inbox</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => navigation.navigate('Bio')}
-        >
-          <Feather name="user" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Me</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -153,7 +120,7 @@ export default function PreferencesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#CFAFA6',
   },
   scrollContent: {
     paddingBottom: 120,
@@ -162,7 +129,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 10,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#CFAFA6',
   },
   logo: {
     width: 60,
@@ -238,4 +205,12 @@ const styles = StyleSheet.create({
     marginTop: 4,
     color: '#B40324',
   },
+  toggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginTop: 20,
+  },
+
 });

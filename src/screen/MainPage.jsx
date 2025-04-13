@@ -14,6 +14,13 @@ import {
 } from 'react-native';
 import PreferencesScreen from './PreferencesScreen';
 
+const avatarImages = [
+  require('../assets/bear.png'),
+  require('../assets/bunny.png'),
+  require('../assets/cat.png'),
+  require('../assets/dog.png'),
+];
+
 const NearbyRestaurants = ({ restaurants, onSelectRestaurant }) => {
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollContainer}>
@@ -46,26 +53,39 @@ const MainPage = () => {
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [nearbyUsers, setNearbyUsers] = useState([]);
   const [isVisibleOnMap, setIsVisibleOnMap] = useState(true);
-
   useEffect(() => {
     const fetchUserPreferences = async () => {
       const userId = auth.currentUser?.uid;
       if (!userId) return;
+
       try {
         const docRef = doc(db, 'users', userId);
         const docSnap = await getDoc(docRef);
+
         if (docSnap.exists()) {
           const data = docSnap.data();
+
+          // Check visibility setting
           if (data.preferences?.visibleOnMap === false) {
             setIsVisibleOnMap(false);
+          }
+
+          // Assign avatarIndex if not set
+          if (data.avatarIndex === undefined) {
+            const randomIndex = Math.floor(Math.random() * 4);
+            await setDoc(docRef, { avatarIndex: randomIndex }, { merge: true });
+            console.log(`Random avatar ${randomIndex} assigned to user.`);
           }
         }
       } catch (error) {
         console.error("Error fetching user preferences:", error);
       }
     };
+
     fetchUserPreferences();
   }, []);
+
+
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
@@ -77,6 +97,7 @@ const MainPage = () => {
             id: docSnap.id,
             lat: data.location.lat,
             lng: data.location.lng,
+            avatarIndex: data.avatarIndex ?? 0,
           });
         }
       });
@@ -139,21 +160,21 @@ const MainPage = () => {
   }, [isVisibleOnMap]);
   const handleSearch = async () => {
     if (!searchQuery.trim() || !location) return;
-  
+
     const { latitude, longitude } = location;
-  
+
     try {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1500&keyword=${encodeURIComponent(searchQuery)}&type=restaurant&key=${GOOGLE_API_KEY}`
       );
       const data = await response.json();
-  
+
       const results = data.results.map((place, index) => {
         const photoRef = place.photos?.[0]?.photo_reference || null;
         const photoUrl = photoRef
           ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoRef}&key=${GOOGLE_API_KEY}`
           : 'https://via.placeholder.com/200x180.png?text=No+Image';
-  
+
         return {
           id: place.place_id || index.toString(),
           name: place.name,
@@ -164,14 +185,14 @@ const MainPage = () => {
           rating: place.rating || null,
         };
       });
-  
+
       setRestaurants(results);
       setRecommendations(results.slice(0, 10));
     } catch (error) {
       console.error('Search error:', error);
     }
   };
-  
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -180,12 +201,12 @@ const MainPage = () => {
         <View style={styles.searchWrapper}>
           <Feather name="search" size={18} color="#999" style={styles.searchIcon} />
           <TextInput
-           style={styles.searchBarWithIcon}
-           placeholder="Search..."
-           placeholderTextColor="#999"
-           value={searchQuery}
-          onChangeText={setSearchQuery}
-          onSubmitEditing={handleSearch}
+            style={styles.searchBarWithIcon}
+            placeholder="Search..."
+            placeholderTextColor="#999"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onSubmitEditing={handleSearch}
           />
 
         </View>
@@ -223,32 +244,32 @@ const MainPage = () => {
                 coordinate={{ latitude: user.lat, longitude: user.lng }}
                 title="Foodie Nearby"
                 description="Another Social Foodie is around here!"
-                pinColor={user.id === auth.currentUser?.uid ? "#00FF00" : "#0000FF"}
+                image={avatarImages[user.avatarIndex ?? 0]}
               />
             ))}
           </MapView>
         )}
         <View style={styles.toggleContainer}>
-  <Text style={styles.toggleLabel}>Show me on map:</Text>
-  <TouchableOpacity
-    style={[
-      styles.toggleButton,
-      { backgroundColor: isVisibleOnMap ? '#B40324' : '#ccc' },
-    ]}
-    onPress={async () => {
-      const newValue = !isVisibleOnMap;
-      setIsVisibleOnMap(newValue);
-      const userId = auth.currentUser?.uid;
-      if (userId) {
-        await setDoc(doc(db, 'users', userId), {
-          preferences: { visibleOnMap: newValue }
-        }, { merge: true });
-      }
-    }}
-  >
-    <Text style={styles.toggleText}>{isVisibleOnMap ? 'Yes' : 'No'}</Text>
-  </TouchableOpacity>
-</View>
+          <Text style={styles.toggleLabel}>Show me on map:</Text>
+          <TouchableOpacity
+            style={[
+              styles.toggleButton,
+              { backgroundColor: isVisibleOnMap ? '#B40324' : '#ccc' },
+            ]}
+            onPress={async () => {
+              const newValue = !isVisibleOnMap;
+              setIsVisibleOnMap(newValue);
+              const userId = auth.currentUser?.uid;
+              if (userId) {
+                await setDoc(doc(db, 'users', userId), {
+                  preferences: { visibleOnMap: newValue }
+                }, { merge: true });
+              }
+            }}
+          >
+            <Text style={styles.toggleText}>{isVisibleOnMap ? 'Yes' : 'No'}</Text>
+          </TouchableOpacity>
+        </View>
 
 
         <Text style={styles.recommendationTitle}>Foodie Recommendations</Text>
@@ -274,27 +295,27 @@ const MainPage = () => {
         )}
       </View>
       <View style={styles.bottomTab}>
-                <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('MainPage')}>
-                    <Feather name="home" size={28} color="#B40324" />
-                    <Text style={styles.tabLabel}>Home</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Rewards')}>
-                    <Feather name="gift" size={28} color="#B40324" />
-                    <Text style={styles.tabLabel}>Rewards</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.tabItem}>
-                    <Feather name="heart" size={28} color="#B40324" />
-                    <Text style={styles.tabLabel}>Matches</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.tabItem}>
-                    <Feather name="message-square" size={28} color="#B40324" />
-                    <Text style={styles.tabLabel}>Inbox</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Bio')}>
-                    <Feather name="user" size={28} color="#B40324" />
-                    <Text style={styles.tabLabel}>Me</Text>
-                </TouchableOpacity>
-            </View>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('MainPage')}>
+          <Feather name="home" size={28} color="#B40324" />
+          <Text style={styles.tabLabel}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Rewards')}>
+          <Feather name="gift" size={28} color="#B40324" />
+          <Text style={styles.tabLabel}>Rewards</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem}>
+          <Feather name="heart" size={28} color="#B40324" />
+          <Text style={styles.tabLabel}>Matches</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem}>
+          <Feather name="message-square" size={28} color="#B40324" />
+          <Text style={styles.tabLabel}>Inbox</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Bio')}>
+          <Feather name="user" size={28} color="#B40324" />
+          <Text style={styles.tabLabel}>Me</Text>
+        </TouchableOpacity>
+      </View>
 
     </SafeAreaView>
   );
@@ -433,5 +454,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
-  
+
 });

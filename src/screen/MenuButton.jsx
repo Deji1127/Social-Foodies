@@ -36,7 +36,7 @@ export default function MenuButton() {
           <View style={styles.dropdown}>
             {[
               { label: 'Preferences', action: () => navigation.navigate('PreferencesScreen') },
-              { label: 'Contact Support', action: () => navigation.navigate('SupportScreen') },
+              { label: 'Contact Support', action: () => navigation.navigate('ContactSupport') },
               { label: 'About', action: () => navigation.navigate('About')},
               { label: 'Terms & Conditions', action: () => navigation.navigate('Terms') },/// TERMS CONDITONSSSSS JUST UPDATED            
               { label: 'Log Out', action: () => navigation.navigate('Logout'), danger: true },

@@ -73,7 +73,6 @@ const Rewards = () => {
             </View>
           ))}
       </ScrollView>
-
       <BottomTab />
     </View>
   );

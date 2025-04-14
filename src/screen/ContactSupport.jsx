@@ -5,11 +5,12 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   Alert,
+  ScrollView,
+  SafeAreaView,
 } from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
+import BottomTab from './BottomTab';
 
 const ContactSupport = () => {
   const [subject, setSubject] = useState('');
@@ -27,66 +28,57 @@ const ContactSupport = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Contact Support</Text>
-      <Text style={styles.subtitle}>
-        Need help? Reach out to us below and we'll get back to you ASAP.
-      </Text>
+    <View style={styles.wrapper}>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView contentContainerStyle={styles.content}>
+          <Text style={styles.title}>Contact Support</Text>
+          <Text style={styles.subtitle}>
+            Need help? Reach out to us below and we'll get back to you ASAP.
+          </Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Subject"
-        value={subject}
-        onChangeText={setSubject}
-      />
+          <TextInput
+            style={styles.input}
+            placeholder="Subject"
+            value={subject}
+            onChangeText={setSubject}
+          />
 
-      <TextInput
-        style={[styles.input, styles.messageInput]}
-        placeholder="Your message..."
-        multiline
-        numberOfLines={5}
-        value={message}
-        onChangeText={setMessage}
-      />
+          <TextInput
+            style={[styles.input, styles.messageInput]}
+            placeholder="Your message..."
+            multiline
+            numberOfLines={5}
+            value={message}
+            onChangeText={setMessage}
+          />
 
-      <TouchableOpacity style={styles.button} onPress={handleSend}>
-        <Text style={styles.buttonText}>Send Message</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleSend}>
+            <Text style={styles.buttonText}>Send Message</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
 
-      {/* Bottom Tab Navigation */}
+      {/* This ensures your custom tab stays pinned to the bottom */}
       <View style={styles.bottomTab}>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('MainPage')}>
-          <Feather name="home" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Rewards')}>
-          <Feather name="gift" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Rewards</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem}>
-          <Feather name="heart" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Matches</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem}>
-          <Feather name="message-square" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Inbox</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Bio')}>
-          <Feather name="user" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Me</Text>
-        </TouchableOpacity>
+        <BottomTab />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  wrapper: {
     flex: 1,
+    position: 'relative',
     backgroundColor: '#DBB6A7',
+  },
+  safeArea: {
+    flex: 1,
+  },
+  content: {
     paddingHorizontal: 20,
     paddingTop: 100,
-    justifyContent: 'flex-start',
+    paddingBottom: 100,
   },
   title: {
     fontSize: 28,
@@ -119,7 +111,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     marginTop: 10,
-    marginBottom: 30,
   },
   buttonText: {
     color: '#fff',
@@ -127,24 +118,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   bottomTab: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderColor: '#ddd',
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-  },
-  tabItem: {
-    alignItems: 'center',
-  },
-  tabLabel: {
-    fontSize: 12,
-    color: '#B40324',
-    marginTop: 4,
   },
 });
 

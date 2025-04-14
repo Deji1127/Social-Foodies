@@ -51,7 +51,7 @@ const Sign = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       Alert.alert("Success", "Account created successfully!");
       console.log("User signed up successfully:", userCredential.user);
-      navigation.replace("Main_page");
+      navigation.replace("MatchSetup");
 
     } catch (error) {
       console.error("Sign-up Error:", error);
@@ -61,12 +61,10 @@ const Sign = () => {
 
   return (
     <View style={styles.container}>
-      {/* Back Button */}
       <TouchableOpacity style={styles.backButtonWrapper} onPress={handleGoBack}>
         <Feather name={"arrow-left-circle"} color={colors.deepRed} size={40} />
       </TouchableOpacity>
 
-      {/* Welcome Text */}
       <View style={styles.TextContainer}>
         <Text style={styles.headingText}>Let's get</Text>
         <Text style={styles.headingText}>Started!</Text>
@@ -117,7 +115,6 @@ const Sign = () => {
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
 
-        {/* Sign Up Button */}
         <TouchableOpacity style={styles.loginButtonWrapper} onPress={handleSignUp}>
           <Text style={styles.loginText}>Sign Up</Text>
         </TouchableOpacity>

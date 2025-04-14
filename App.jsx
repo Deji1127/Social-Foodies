@@ -12,6 +12,8 @@ import Friends from "./src/screen/Friends";
 import Inbox from "./src/screen/Inbox.jsx";
 import ChatScreen from "./src/screen/ChatScreen.jsx";
 import NewMessageScreen from "./src/screen/NewMessageScreen.jsx";
+import Matches from './src/screen/Matches.jsx';
+import MatchSetup from './src/screen/MatchSetup.jsx';
 import WebViewScreen from './src/screen/WebViewScreen.jsx'; // Import the WebView screen
 import MenuButton from './src/screen/MenuButton.jsx'; // Import the WebView screen
 import PreferencesScreen from './src/screen/PreferencesScreen.jsx'; // Import the WebView screen
@@ -19,9 +21,6 @@ import Terms from './src/screen/Terms.jsx';/// TERMS CONDITONSSSSS JUST UPDATED
 import Logout from './src/screen/Logout'; // LOGOUT UPDATTTTTEED
 import About from './src/screen/About'; // LOGOUT UPDATTTTTEED
 import ContactSupport from './src/screen/ContactSupport'; // CONTACT SUPPORT UPDATED
-
-
-
 
 
 const Stack = createNativeStackNavigator();
@@ -44,6 +43,8 @@ const App = () => {
                 <Stack.Screen name="Inbox" component={Inbox} />
                 <Stack.Screen name="Chat" component={ChatScreen} />
                 <Stack.Screen name="NewMessage" component={NewMessageScreen} />
+                <Stack.Screen name="Matches" component={Matches}/>
+                <Stack.Screen name="MatchSetup" component={MatchSetup}/>
                 <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
                 <Stack.Screen name="MenuButton" component={MenuButton}/>
                 <Stack.Screen name="PreferencesScreen" component={PreferencesScreen}/>
@@ -51,10 +52,6 @@ const App = () => {
                 <Stack.Screen name="Logout" component={Logout} />
                 <Stack.Screen name="About" component={About}/>
                 <Stack.Screen name="ContactSupport" component={ ContactSupport}/>
-
-
-
-
 
             </Stack.Navigator>
         </NavigationContainer>

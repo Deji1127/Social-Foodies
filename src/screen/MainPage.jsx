@@ -8,6 +8,7 @@ import { GOOGLE_API_KEY } from '../utils/constants';
 import { doc, setDoc, collection, onSnapshot, getDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import MenuButton from './MenuButton';
+import BottomTab from './BottomTab';
 
 import {
   ScrollView, View, Text, Image, Dimensions, StyleSheet, TextInput, TouchableOpacity, Alert,
@@ -295,28 +296,8 @@ const MainPage = () => {
         )}
       </View>
       <View style={styles.bottomTab}>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('MainPage')}>
-          <Feather name="home" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Rewards')}>
-          <Feather name="gift" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Rewards</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem}>
-          <Feather name="heart" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Matches</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem}>
-          <Feather name="message-square" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Inbox</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Bio')}>
-          <Feather name="user" size={28} color="#B40324" />
-          <Text style={styles.tabLabel}>Me</Text>
-        </TouchableOpacity>
+        <BottomTab />
       </View>
-
     </SafeAreaView>
   );
 };
@@ -415,16 +396,10 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   bottomTab: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 15,
-    paddingBottom: 25,
-    borderTopWidth: 1,
-    borderColor: '#B40324',
-    backgroundColor: '#CFAFA6',
     position: 'absolute',
     bottom: 0,
-    width: '100%',
+    left: 0,
+    right: 0,
   },
   tabItem: {
     alignItems: 'center',

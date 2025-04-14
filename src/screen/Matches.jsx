@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#8D2D2A",
     textAlign: "center",
-    marginTop: 20,
+    marginTop: 60,
     marginBottom: 10,
   },
   tabs: {

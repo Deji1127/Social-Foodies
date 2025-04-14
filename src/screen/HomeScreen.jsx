@@ -17,6 +17,7 @@ const HomeScreen = () => {
     navigation.navigate("Sign");
   };
 
+
   return (
     <View style={styles.container}>
       <Image

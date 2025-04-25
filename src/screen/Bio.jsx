@@ -30,7 +30,7 @@ const sampleReviews = [
   },
   {
     id: "2",
-    name: "Austin Pets Alive!",
+    name: "Farm Food Kitchen!",
     image: require("../assets/pic1.png"),
   },
   {

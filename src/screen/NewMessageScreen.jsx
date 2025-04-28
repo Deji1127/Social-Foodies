@@ -5,6 +5,8 @@ import { colors } from '../utils/colors';
 import { fonts } from '../utils/fonts';
 
 
+
+
 const NewMessageScreen = ({ route, navigation }) => {
   const matches = route.params?.matches || [
     // Default matches
@@ -30,7 +32,9 @@ const NewMessageScreen = ({ route, navigation }) => {
     }
   ];
 
+
   const [searchQuery, setSearchQuery] = useState('');
+
 
   // Mock existing conversations - replace with your actual data
   const [conversations] = useState([
@@ -47,9 +51,13 @@ const NewMessageScreen = ({ route, navigation }) => {
   ]);
 
 
+
+
   const filteredMatches = matches.filter(match =>
     match.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+
 
 
   const handleRecipientSelect = (recipient) => {
@@ -57,6 +65,8 @@ const NewMessageScreen = ({ route, navigation }) => {
     const existingConvo = conversations.find(conv =>
       conv.participants.some(p => p.id === recipient.id)
     );
+
+
 
 
     if (existingConvo) {
@@ -89,6 +99,8 @@ const NewMessageScreen = ({ route, navigation }) => {
   };
 
 
+
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -99,6 +111,8 @@ const NewMessageScreen = ({ route, navigation }) => {
         <Text style={styles.headerTitle}>New Message</Text>
         <View style={styles.headerSpacer} />
       </View>
+
+
 
 
       {/* Search Bar */}
@@ -112,6 +126,7 @@ const NewMessageScreen = ({ route, navigation }) => {
           onChangeText={setSearchQuery}
         />
       </View>
+
 
       {/* Matches List */}
       <FlatList
@@ -148,6 +163,8 @@ const NewMessageScreen = ({ route, navigation }) => {
     </View>
   );
 };
+
+
 
 
 const styles = StyleSheet.create({
@@ -250,6 +267,8 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 });
+
+
 
 
 export default NewMessageScreen;

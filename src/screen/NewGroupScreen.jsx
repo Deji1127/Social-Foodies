@@ -5,10 +5,13 @@ import { colors } from "../utils/colors";
 import { fonts } from '../utils/fonts';
 
 
+
+
 const NewGroupScreen = ({ navigation }) => {
     const [groupName, setGroupName] = useState('');
     const [selectedFriends, setSelectedFriends] = useState([]);
     const [autoGroupName, setAutoGroupName] = useState('');
+
 
     // Mock friends list and existing groups
     const friends = [
@@ -19,11 +22,15 @@ const NewGroupScreen = ({ navigation }) => {
     ];
 
 
+
+
     // Mock existing groups - replace with your actual data
     const [existingGroups] = useState([
         { id: 'group1', name: 'Foodie Squad', members: ['1', '3'] },
         { id: 'group2', name: 'Work Friends', members: ['2', '4'] }
     ]);
+
+
 
 
     useEffect(() => {
@@ -38,6 +45,8 @@ const NewGroupScreen = ({ navigation }) => {
     }, [selectedFriends]);
 
 
+
+
     const toggleFriendSelection = (friendId) => {
         setSelectedFriends(prev =>
             prev.includes(friendId)
@@ -47,11 +56,16 @@ const NewGroupScreen = ({ navigation }) => {
     };
 
 
+
+
     const createGroup = () => {
         if (selectedFriends.length === 0) return;
 
 
+
+
         const finalGroupName = groupName.trim() || autoGroupName;
+
 
         // Check for existing group with same members
         const isDuplicateGroup = existingGroups.some(group => {
@@ -59,6 +73,8 @@ const NewGroupScreen = ({ navigation }) => {
                 group.members.every(member => selectedFriends.includes(member));
             return sameMembers;
         });
+
+
 
 
         if (isDuplicateGroup) {
@@ -80,12 +96,16 @@ const NewGroupScreen = ({ navigation }) => {
             };
 
 
+
+
             // Navigate to GroupChat with the complete group object
             navigation.navigate('GroupChat', {
                 group: newGroup
             });
         }
     };
+
+
 
 
     return (
@@ -110,6 +130,8 @@ const NewGroupScreen = ({ navigation }) => {
             </View>
 
 
+
+
             {/* Group Name Input remains the same */}
             <View style={styles.nameContainer}>
                 <TextInput
@@ -123,6 +145,8 @@ const NewGroupScreen = ({ navigation }) => {
                     <Text style={styles.autoNameHint}>Will display as: {autoGroupName}</Text>
                 )}
             </View>
+
+
 
 
             {/* Friends List remains the same */}
@@ -156,6 +180,8 @@ const NewGroupScreen = ({ navigation }) => {
         </View>
     );
 };
+
+
 
 
 const styles = StyleSheet.create({
@@ -250,5 +276,6 @@ const styles = StyleSheet.create({
 });
 
 
-export default NewGroupScreen;
 
+
+export default NewGroupScreen;

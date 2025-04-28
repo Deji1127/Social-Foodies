@@ -18,14 +18,18 @@ import { getAuth } from 'firebase/auth';
 import { db } from '../firebase';
 
 
+
+
 const ChatScreen = ({ route }) => {
   // Extract params and initialize navigation
   const { chat, onUpdateLastMessage } = route.params;
   const navigation = useNavigation();
 
+
   // State management
   const [newMessage, setNewMessage] = useState('');
   const flatListRef = useRef(null);
+
 
   // Initialize messages with the last message from inbox if it exists
   const [messages, setMessages] = useState(() => {
@@ -42,6 +46,8 @@ const ChatScreen = ({ route }) => {
   });
 
 
+
+
   // Mark messages as read when chat is opened (with 1s delay)
   useEffect(() => {
     const markAsReadTimer = setTimeout(() => {
@@ -51,14 +57,20 @@ const ChatScreen = ({ route }) => {
     }, 1000);
 
 
+
+
     return () => clearTimeout(markAsReadTimer);
   }, [chat.unread]);
+
+
 
 
   // Load messages from Firestore in real-time
   useEffect(() => {
     const messagesRef = collection(db, 'chats', chat.id, 'messages');
     const q = query(messagesRef, orderBy('timestamp', 'asc'));
+
+
 
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -77,8 +89,12 @@ const ChatScreen = ({ route }) => {
     });
 
 
+
+
     return () => unsubscribe();
   }, [chat.id]);
+
+
 
 
   // Auto-scroll to bottom when messages change
@@ -89,6 +105,8 @@ const ChatScreen = ({ route }) => {
       }, 100);
     }
   }, [messages]);
+
+
 
 
   // Handle sending new messages
@@ -102,19 +120,24 @@ const ChatScreen = ({ route }) => {
         isYou: true
       };
 
+
       // Update local state immediately
       setMessages(prev => [...prev, newMsg]);
       setNewMessage('');
+
 
       // Update last message in inbox and mark as read
       if (onUpdateLastMessage) {
         onUpdateLastMessage(newMessage);
       }
 
+
       // Here you would save to Firestore
       console.log("Would save to Firestore:", newMsg);
     }
   };
+
+
 
 
   return (
@@ -125,7 +148,9 @@ const ChatScreen = ({ route }) => {
           <Ionicons name="arrow-back" size={24} color='#B40324' />
         </TouchableOpacity>
 
+
         <Image source={{ uri: chat.avatar }} style={styles.headerAvatar} />
+
 
         <View style={styles.headerText}>
           <Text style={styles.headerTitle}>{chat.name}</Text>
@@ -134,6 +159,8 @@ const ChatScreen = ({ route }) => {
           )}
         </View>
       </View>
+
+
 
 
       {/* Messages List */}
@@ -152,7 +179,9 @@ const ChatScreen = ({ route }) => {
               <Text style={styles.senderName}>{item.sender || 'User'}</Text>
             )}
 
+
             <Text style={styles.messageText}>{item.text}</Text>
+
 
             {/* Show time - use chat.time for initial message */}
             <Text style={styles.messageTime}>
@@ -161,6 +190,8 @@ const ChatScreen = ({ route }) => {
           </View>
         )}
       />
+
+
 
 
       {/* Message Input Area */}
@@ -176,6 +207,7 @@ const ChatScreen = ({ route }) => {
           placeholderTextColor="#999"
           multiline
         />
+
 
         <TouchableOpacity
           style={[
@@ -195,6 +227,8 @@ const ChatScreen = ({ route }) => {
     </View>
   );
 };
+
+
 
 
 const styles = StyleSheet.create({
@@ -294,6 +328,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
+
+
 
 
 export default ChatScreen;

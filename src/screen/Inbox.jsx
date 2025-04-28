@@ -7,9 +7,15 @@ import BottomTab from './BottomTab';
 
 
 
+
+
+
+
 const Inbox = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+
 
 
   const [chats, setChats] = useState([
@@ -34,6 +40,8 @@ const Inbox = ({ navigation }) => {
   ]);
 
 
+
+
   const [groups] = useState([
     {
       id: 'g1',
@@ -45,6 +53,8 @@ const Inbox = ({ navigation }) => {
       avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
     }
   ]);
+
+
 
 
   // handle markAsRead parameter
@@ -64,9 +74,13 @@ const Inbox = ({ navigation }) => {
   };
 
 
+
+
   const filteredChats = chats.filter(chat =>
     chat.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+
 
 
   const filteredGroups = groups.filter(group =>
@@ -74,9 +88,12 @@ const Inbox = ({ navigation }) => {
   );
 
 
+
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={colors.darkAccent} />
+
 
       <View style={styles.headerContainer}>
         <View style={styles.header}>
@@ -91,6 +108,8 @@ const Inbox = ({ navigation }) => {
       </View>
 
 
+
+
       <ScrollView style={styles.content}>
         <View style={styles.searchWrapper}>
           <Feather name="search" size={18} color="#999" style={styles.searchIcon} />
@@ -102,6 +121,8 @@ const Inbox = ({ navigation }) => {
             onChangeText={setSearchQuery}
           />
         </View>
+
+
 
 
         {/* Foodie Matches */}
@@ -122,6 +143,8 @@ const Inbox = ({ navigation }) => {
             <Text style={styles.matchName}>Michael T.</Text>
           </TouchableOpacity>
         </View>
+
+
 
 
         {/* Groups */}
@@ -171,6 +194,8 @@ const Inbox = ({ navigation }) => {
             )}
           />
         )}
+
+
 
 
         {/* Messages */}
@@ -223,6 +248,8 @@ const Inbox = ({ navigation }) => {
       </ScrollView>
 
 
+
+
       <Modal
         visible={isModalVisible}
         transparent={true}
@@ -264,10 +291,14 @@ const Inbox = ({ navigation }) => {
       </Modal>
 
 
+
+
       <BottomTab />
     </View>
   );
 };
+
+
 
 
 const styles = StyleSheet.create({
@@ -480,6 +511,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+
 
 
 export default Inbox;

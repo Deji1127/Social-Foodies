@@ -24,13 +24,17 @@ import ContactSupport from './src/screen/ContactSupport'; // CONTACT SUPPORT UPD
 import NewGroupScreen from "./src/screen/NewGroupScreen.jsx";
 
 
+
+
 const Stack = createNativeStackNavigator();
+
 
 const App = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{
                 headerShown: false,
+
 
             }}>
                 <Stack.Screen name="Home" component={HomeScreen} />
@@ -56,11 +60,12 @@ const App = () => {
                 <Stack.Screen name="NewGroup" component={NewGroupScreen} />
 
 
+
+
             </Stack.Navigator>
         </NavigationContainer>
     );
 };
-
 
 
 export default App;

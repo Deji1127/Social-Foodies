@@ -16,7 +16,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
     npx expo start
    ```
 
-3. Run starter portion
+3. Run starter portion for individual map
 
 ```bash
    cd /workspaces/Social-Foodies/starter
@@ -81,3 +81,9 @@ To contribute changes to this project, please follow the version control guideli
 
 3. Creating a Pull Request (PR)
    - Open a PR from your feature/fix branch into main on the website and merge
+
+
+# Personal points
+
+Demo Video : https://youtu.be/gw5mhE8i-RI
+

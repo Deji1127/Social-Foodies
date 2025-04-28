@@ -21,15 +21,20 @@ import Terms from './src/screen/Terms.jsx';/// TERMS CONDITONSSSSS JUST UPDATED
 import Logout from './src/screen/Logout'; // LOGOUT UPDATTTTTEED
 import About from './src/screen/About'; // LOGOUT UPDATTTTTEED
 import ContactSupport from './src/screen/ContactSupport'; // CONTACT SUPPORT UPDATED
+import NewGroupScreen from "./src/screen/NewGroupScreen.jsx";
+
+
 
 
 const Stack = createNativeStackNavigator();
+
 
 const App = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{
                 headerShown: false,
+
 
             }}>
                 <Stack.Screen name="Home" component={HomeScreen} />
@@ -43,21 +48,24 @@ const App = () => {
                 <Stack.Screen name="Inbox" component={Inbox} />
                 <Stack.Screen name="Chat" component={ChatScreen} />
                 <Stack.Screen name="NewMessage" component={NewMessageScreen} />
-                <Stack.Screen name="Matches" component={Matches}/>
-                <Stack.Screen name="MatchSetup" component={MatchSetup}/>
+                <Stack.Screen name="Matches" component={Matches} />
+                <Stack.Screen name="MatchSetup" component={MatchSetup} />
                 <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
-                <Stack.Screen name="MenuButton" component={MenuButton}/>
-                <Stack.Screen name="PreferencesScreen" component={PreferencesScreen}/>
-                <Stack.Screen name="Terms" component={Terms} /> 
+                <Stack.Screen name="MenuButton" component={MenuButton} />
+                <Stack.Screen name="PreferencesScreen" component={PreferencesScreen} />
+                <Stack.Screen name="Terms" component={Terms} />
                 <Stack.Screen name="Logout" component={Logout} />
-                <Stack.Screen name="About" component={About}/>
-                <Stack.Screen name="ContactSupport" component={ ContactSupport}/>
+                <Stack.Screen name="About" component={About} />
+                <Stack.Screen name="ContactSupport" component={ContactSupport} />
+                <Stack.Screen name="NewGroup" component={NewGroupScreen} />
+
+
+
 
             </Stack.Navigator>
         </NavigationContainer>
     );
 };
-
 
 
 export default App;

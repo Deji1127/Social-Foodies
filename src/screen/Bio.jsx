@@ -30,7 +30,7 @@ const sampleReviews = [
   },
   {
     id: "2",
-    name: "Austin Pets Alive!",
+    name: "Farm Food Kitchen!",
     image: require("../assets/pic1.png"),
   },
   {
@@ -198,12 +198,31 @@ const Bio = () => {
       const uri = result.assets[0].uri;
       setPicture(uri);
       setProfile((prev) => ({ ...prev, picture: uri }));
+
+
+      const userId = auth.currentUser?.uid;
+      if (userId) {
+        try {
+          await updateProfileInFirestore(userId, { picture: uri }); // <-- SAVE IT
+          console.log("Profile picture saved successfully!");
+        } catch (error) {
+          console.error("Error saving profile picture: ", error);
+        }
+      }
+
+
+
     }
   };
 
   const toggleEditMode = async () => {
     if (editMode) {
-      const profileData = { name, email, bio, picture };
+      const profileData = {
+        name: name || "",
+        email: email || "",
+        bio: bio || "",
+        picture: picture || null,
+      };
       const userId = auth.currentUser?.uid;
       if (userId) {
         await updateProfileInFirestore(userId, profileData);
@@ -212,6 +231,7 @@ const Bio = () => {
     }
     setEditMode(!editMode);
   };
+
 
   const handleSignOut = async () => {
     try {
